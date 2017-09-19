@@ -5,9 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- As 3 meta tags acima *devem* vir em primeiro lugar dentro do `head`; qualquer outro conteúdo deve vir *após* essas tags -->
-    <title>Página de Login</title>
-	
+    <title>Página de Cadastro</title>
 	<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+
     <!-- Bootstrap -->
     <link href="css/bootstrap.css" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
@@ -30,21 +30,45 @@
                   <legend>Login</legend>
                   <div class="form-group">
                       <span class="glyphicon glyphicon-user"></span>
-                      <label>Aluno:</label>
-                      <input type="text" name="matricula" placeholder="Nome || Matricula"/>
+                      <label>Nome:</label>
+                      <input type="text" name="nome" placeholder="Nome" required class="form-control"/>
                   </div>
                   <div class="form-group">
                       <span class="glyphicon glyphicon-user"></span>
-                      <label>Senha:</label>
-                      <input type="password" name="pass" placeholder="*******"/>
+                      <label>Sobrenome:</label>
+                      <input type="text" name="snome" placeholder="Sobrenome" required class="form-control"/>
                   </div>
-                  <div class="form-group text-center">
-                      <input type="submit" value="Entrar" class="btn btn-success"/>
-                      <input type="submit" value="Não tenho Cadastro" class="btn btn-warning"/>
+                   <div class="form-group">
+                      <span class="glyphicon glyphicon-user"></span>
+                      <label>Nome de Usuário:</label>
+                      <input type="text" name="snome" placeholder="Nome de Usuário" required class="form-control"/>
+                  </div>
+                   <div class="form-group">
+                      <span class="glyphicon glyphicon-user"></span>
+                      <label>Matricula:</label>
+                      <input type="text" name="nome" placeholder="Matricula"required class="form-control"/>
                   </div>
                   <div class="form-group">
-                      <a href="recov.html">Esqueci minha senha</a>
+                      <span class="fa fa-envelope"></span>
+                      <label>Email:</label>
+                      <input type="email" name="nome" placeholder="email@dominio"required class="form-control"/>
                   </div>
+                  <div class="form-group">
+                      <span class="fa fa-key"></span>
+                      <label>Senha</label>
+                      <input type="password" name="senha" placeholder="******" class="form-control"/>
+                  </div>
+                  <div class="form-group">
+                      <span class="fa fa-key"></span>
+                      <label>Confirme a Senha</label>
+                      <input type="password" name="senhac" placeholder="******" class="form-control"/>
+                  </div>
+                  
+                  <div class="form-group text-center">
+                      <input type="submit" value="Cadastrar" class="btn btn-success"/>
+                      <input type="submit" value="Já tenho cadastro" class="btn btn-warning"/>
+                  </div>
+                  
           </fieldset>
           </form>
         </div>
