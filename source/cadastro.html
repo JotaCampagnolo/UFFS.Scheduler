@@ -27,41 +27,41 @@
         <div class="col-sm-6">
           <form action = "cadastrar.php" class="form-horizontal" method="post" style="margin-top: -30px">
               <fieldset style="margin: 40px 20px 40px 20px">
-                  <legend>Login</legend>
+                  <legend>Cadastro de Usuário</legend>
                   <div class="form-group">
                       <span class="glyphicon glyphicon-user"></span>
                       <label>Nome:</label>
-                      <input type="text" name="nome" placeholder="Nome" required class="form-control"/>
+                      <input type="text" name="first_name" placeholder="Nome" maxlength="20" required class="form-control"/>
                   </div>
                   <div class="form-group">
                       <span class="glyphicon glyphicon-user"></span>
                       <label>Sobrenome:</label>
-                      <input type="text" name="snome" placeholder="Sobrenome" required class="form-control"/>
+                      <input type="text" name="last_name" placeholder="Sobrenome" maxlength="20" required class="form-control"/>
                   </div>
                    <div class="form-group">
                       <span class="glyphicon glyphicon-user"></span>
                       <label>Nome de Usuário:</label>
-                      <input type="text" name="snome" placeholder="Nome de Usuário" required class="form-control"/>
+                      <input type="text" name="username" placeholder="Nome de Usuário" maxlength="20" required class="form-control"/>
                   </div>
                    <div class="form-group">
                       <span class="glyphicon glyphicon-user"></span>
                       <label>Matricula:</label>
-                      <input type="text" name="nome" placeholder="Matricula"required class="form-control"/>
+                      <input type="text" name="enrollment" placeholder="Matricula" maxlength="20"required class="form-control"/>
                   </div>
                   <div class="form-group">
                       <span class="fa fa-envelope"></span>
                       <label>Email:</label>
-                      <input type="email" name="nome" placeholder="email@dominio"required class="form-control"/>
+                      <input type="email" name="email" placeholder="email@dominio" maxlength="40" required class="form-control"/>
                   </div>
                   <div class="form-group">
                       <span class="fa fa-key"></span>
                       <label>Senha</label>
-                      <input type="password" name="senha" placeholder="******" class="form-control"/>
+                      <input type="password" name="password" placeholder="******" maxlength="20" required class="form-control"/>
                   </div>
                   <div class="form-group">
                       <span class="fa fa-key"></span>
                       <label>Confirme a Senha</label>
-                      <input type="password" name="senhac" placeholder="******" class="form-control"/>
+                      <input type="password" name="password_c" placeholder="******" maxlength="20" required class="form-control"/>
                   </div>
                   
                   <div class="form-group text-center">
