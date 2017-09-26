@@ -38,12 +38,10 @@
                       <input type="number" name="year" placeholder="2017" required class="form-control"/>
                   </div>
                    <div class="form-group">
-                      <span class="fa fa-calendar-check-o"></span>
-                      <label>Semestre de Ingresso:</label>
-                      <select multiple class="form-control" size="2" id="semester">
-                        <option>1</option>
-                        <option>2</option>
-                      </select>
+                      <span class="fa fa-calendar"></span>
+                      <label>Semestre de Ingresso:</label>                      
+                      <div id="sem">1</div>
+                      <input type="range" name="semester"  onchange="document.getElementById('sem').innerHTML = this.value" min="1" max="2" value ="1" required />
                   </div>
                   <div class="form-group">
                      <span class="fa fa-clock-o"></span>
@@ -54,11 +52,12 @@
                        <option>Noturno</option>
                      </select>
                  </div>
-                 <div class="form-group">
-                    <span class="fa fa-calendar-check-o"></span>
-                    <label>Período:</label>
-                    <input type="range" name="semester" placeholder="1" required class="form-control"/>
-                </div>
+                  <div class="form-group">
+                      <span class="fa fa-calendar"></span>
+                      <label>Período:</label>                      
+                      <div id="per">1</div>
+                      <input type="range" name="period"  onchange="document.getElementById('per').innerHTML = this.value" min="1" max="10" value="1" required />
+                  </div>
                   <div class="form-group text-center">
                       <input type="submit" value="Cadastrar" class="btn btn-success"/>
                       <input type="submit" value="Já tenho cadastro" class="btn btn-warning"/>
