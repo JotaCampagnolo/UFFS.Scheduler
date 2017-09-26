@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- As 3 meta tags acima *devem* vir em primeiro lugar dentro do `head`; qualquer outro conteúdo deve vir *após* essas tags -->
     <title>Cadastro Turma</title>
-	<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.css" rel="stylesheet">
@@ -19,7 +19,7 @@
     <![endif]-->
   </head>
   <body>
-	       
+
     <div class="container">
       <div class="row">
         <div class="col-sm-3">
@@ -31,17 +31,20 @@
                   <div class="form-group">
                       <span class="fa fa-graduation-cap"></span>
                       <label>Nome da Turma:</label>
-                      <input type="text" name="name" placeholder="Nome da turma" maxlength="50" required class="form-control"/>
+                      <input type="text" name="name" placeholder="CC - 1 Fase - Matutino - 2017/2" maxlength="50" required class="form-control"/>
+                      <div class="text-center" style="margin-top: 5px">
+                        <i>Deixe em branco para que seja criado um nome automaticamente.</i>
+                      <!-- "CC 1 Fase - Matutino - 2017/2" -->
+                      </div>
                   </div>
                   <div class="form-group">
                       <span class="fa fa-calendar"></span>
-                      <label>Ano</label>
+                      <label>Ano de Ingresso</label>
                       <input type="number" name="year"  value="2017" required class="form-control"/>
                   </div>
                   <div class="form-group">
                       <span class="fa fa-calendar"></span>
-                      <label>Semestre:</label>                      
-                      <div id="sem">1</div>
+                      <label>Semestre de Ingresso:</label><i id="sem" style="margin-left: 5px">1</i>
                       <input type="range" name="semester"  onchange="document.getElementById('sem').innerHTML = this.value" min="1" max="2" value ="1" required />
                   </div>
                    <div class="form-group">
@@ -55,15 +58,14 @@
                  </div>
                   <div class="form-group">
                       <span class="fa fa-calendar"></span>
-                      <label>Período:</label>                      
-                      <div id="per">1</div>
+                      <label>Período:</label><i id="per" style="margin-left: 5px">1</i>
                       <input type="range" name="period"  onchange="document.getElementById('per').innerHTML = this.value" min="1" max="10" value="1" required />
                   </div>
                   <div class="form-group text-center">
                       <input type="submit" value="Cadastrar" class="btn btn-success"/>
-                      <input type="submit" value="Alterar Turma Já existente" class="btn btn-warning"/>
+                      <input type="submit" value="Alterar Turma" class="btn btn-primary"/>
                   </div>
-                  
+
           </fieldset>
           </form>
         </div>
@@ -75,8 +77,8 @@
 
       </div>
     </div>
-    
-    
+
+
     <!-- jQuery (obrigatório para plugins JavaScript do Bootstrap) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Inclui todos os plugins compilados (abaixo), ou inclua arquivos separadados se necessário -->
