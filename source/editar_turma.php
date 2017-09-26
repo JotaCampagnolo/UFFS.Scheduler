@@ -48,7 +48,7 @@
                   <div class="form-group">
                       <span class="fa fa-graduation-cap"></span>
                       <label>Novo Nome da Turma:</label>
-                      <input type="text" name="name" placeholder="CC - 1 Fase - Matutino - 2017/2" maxlength="20" required class="form-control"/>
+                      <input type="text" name="name" placeholder="CC - 1 Fase - Matutino - 2017/2" maxlength="20" class="form-control"/>
                       <div class="text-center" style="margin-top: 5px">
                         <i>Deixe em branco para que seja criado um nome automaticamente.</i>
                       <!-- "CC 1 Fase - Matutino - 2017/2" -->
