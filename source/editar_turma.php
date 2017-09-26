@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- As 3 meta tags acima *devem* vir em primeiro lugar dentro do `head`; qualquer outro conteúdo deve vir *após* essas tags -->
     <title>Edição de Turma</title>
-	<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+	  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.css" rel="stylesheet">
@@ -17,8 +17,14 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <?php
+      include "funcoes.php"
+    ?>
   </head>
   <body>
+    <?php
+      $link = DBConection();
+    ?>
     <div class="container">
       <div class="row">
         <div class="col-sm-3">
@@ -30,7 +36,14 @@
                   <div class="form-group">
                       <span class="fa fa-graduation-cap"></span>
                       <label>Selecione a Turma:</label>
-                      <input type="text" name="name" placeholder="Nome da Turma" maxlength="20" required class="form-control"/>
+                      <select id="image_selection" name="role" class="form-control">
+                          <?php
+                              $class = mysqli_query($link, "SELECT uid, name FROM classes");
+                              while ($row = mysqli_fetch_array($class)){
+                                  echo "<option>" . $row[1] . "</option>";
+                              }
+                          ?>
+                      </select>
                   </div>
                   <div class="form-group">
                       <span class="fa fa-graduation-cap"></span>
