@@ -1,3 +1,57 @@
+<?php//17/10 - 08:35  to 8:50
+      session_start();
+      $_SESSION['status'] = 1;
+	     // $link = DBConection();
+      if(isset($_POST["load"])){
+		$role = $_POST["role"];
+		$sql  = "SELECT * FROM `classes` WHERE name = '$role'";
+		$result = mysqli_query($link,$sql);
+		$retorna=mysqli_num_rows($result);
+		if($retorna!=0){
+			$row = mysqli_fetch_array($result);
+			//VALUES ('$name', '$year', '$semester','$shift', '$registry_date') ";
+			$year1 = $row[2];
+			$semester1 = $row[3];
+			$shift1 = $row[4];
+			$period1 = $row[5];
+		}
+	}
+      if(isset($_POST["change"])){
+		$role = $_POST["role"];
+		$sql  = "SELECT * FROM `classes` WHERE name = '$role'";
+		$result = mysqli_query($link,$sql);
+		$retorna=mysqli_num_rows($result);
+		if($retorna!=0){
+			$row = mysqli_fetch_array($result);
+			//VALUES ('$name', '$year', '$semester','$shift', '$registry_date') ";
+			$year1 = $row[2];
+			$semester1 = $row[3];
+			$shift1 = $row[4];
+			$period1 = $row[5];
+			//alteração
+			$year = $_POST["year"];
+			$semester = $_POST["semester"];
+			$shift = $_POST["shift"];
+			$period = $_POST["period"];
+			$registry_date = date("Y-m-d");	
+			if(isset($_POST["name"])){
+				$name = $_POST["name"];
+			}else	
+				$name = "CC - ".$period." Fase - ".$shift." - ".$year."/".$semester;
+				
+			$sql  = "SELECT * FROM `classes` WHERE name = '$name'";
+			$result = mysqli_query($link,$sql);
+			$retorna=mysqli_num_rows($result);
+			if($retorna!=0){
+				$_SESSION['status'] = 2; //erro username				
+			}else{
+				$sql = "UPDATE () FROM `classes` WHERE name = '$role'";
+				
+			}
+		}			
+	}
+ ?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
   <head>
@@ -22,9 +76,6 @@
     ?>
   </head>
   <body>
-    <?php
-      $link = DBConection();
-    ?>
     <div class="container">
       <div class="row">
         <div class="col-sm-3">
@@ -33,6 +84,24 @@
           <form action = "editar_turma.php" class="form-horizontal" method="post" style="margin-top: -30px">
               <fieldset style="margin: 40px 20px 40px 20px">
                   <legend>Edição de Turma</legend>
+                   <?php
+                  if(isset($_SESSION['status']) == 1){
+                    echo '<div class="form-group" style="margin-bottom: -5px">
+                      <div class="alert alert-success" role="alert">
+                        <b>Sucesso!</b>
+                        <i>A Turma foi editada com sucesso!</i>
+                      </div>
+                    </div>';
+                  }
+                  if(isset($_SESSION['status']) == 2){
+                    echo '<div class="form-group" style="margin-bottom: -5px">
+                      <div class="alert alert-danger" role="alert">
+                        <b>Ops!</b>
+                        <i>Edição falhou. Já existe turma com esse nome!</i>
+                      </div>
+                    </div>';
+                  }
+                  ?>
                   <div class="form-group">
                       <span class="fa fa-graduation-cap"></span>
                       <label>Selecione a Turma:</label>
@@ -79,7 +148,7 @@
                       <input type="range" name="period"  onchange="document.getElementById('per').innerHTML = this.value" min="1" max="10" value="1" required />
                   </div>
                   <div class="form-group text-center">
-                      <input type="submit" value="Cadastrar" class="btn btn-success"/>
+                      <input type="submit" name="change" value="Gravar" class="btn btn-success"/>
                       <input type="submit" value="Cancelar" class="btn btn-danger"/>
                   </div>
 
