@@ -105,7 +105,7 @@
                   <div class="form-group">
                       <span class="fa fa-graduation-cap"></span>
                       <label>Selecione a Turma:</label>
-                      <select id="image_selection" name="role" class="form-control selectpicker">
+                      <select id="image_selection" name="role" class="form-control">
                           <?php
                               $class = mysqli_query($link, "SELECT * FROM classes");
                               while ($row = mysqli_fetch_array($class)){
