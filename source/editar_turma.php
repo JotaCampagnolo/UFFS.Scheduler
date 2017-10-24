@@ -1,6 +1,7 @@
 <?php//17/10 - 08:35  to 8:50
       session_start();
       $_SESSION['status'] = 1;
+	     $link = DBConection();
       if(isset($_POST["load"])){
 		$role = $_POST["role"];
 		$sql  = "SELECT * FROM `classes` WHERE name = '$role'";
@@ -38,13 +39,21 @@
 			}else
 				$name = "CC - ".$period." Fase - ".$shift." - ".$year."/".$semester;
 
-			$sql  = "SELECT * FROM `classes` WHERE name = '$name'";
-			$result = mysqli_query($link,$sql);
-			$retorna=mysqli_num_rows($result);
-			if($retorna!=0){
-				$_SESSION['status'] = 2; //erro username
-			}else{
-				$sql = "UPDATE () FROM `classes` WHERE name = '$role'";
+		//	$sql  = "SELECT * FROM `classes` WHERE name = '$name'";
+		//	$result = mysqli_query($link,$sql);
+		//	$retorna=mysqli_num_rows($result);
+		//	if($retorna!=0){
+		//		$_SESSION['status'] = 2; //erro username
+		//	}else{
+		//		$sql = "UPDATE () FROM `classes` WHERE name = '$role'";
+    $up = mysqli_query("UPDATE classes SET year='$year', semester='$semester', shift='$shift',period='$period' WHERE $role=name");
+
+    if(mysqli_affected_rows() > 0){
+      echo "Sucesso: Atualizado corretamente!";
+    }else{
+      echo "Aviso: Não foi atualizado!";
+    }
+
 
 			}
 		}
