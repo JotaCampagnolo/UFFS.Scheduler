@@ -2,7 +2,7 @@
 function DBConection(){
 	$host = "localhost";
 	$user = "root";
-	$pass = "";
+	$pass = "7698740";
 	$database = "mydb";
 
 	$link = mysqli_connect($host, $user, $pass, $database);
@@ -16,9 +16,4 @@ function DBConection(){
 
 	return $link;
 }
-
-	function uffs_login_user() {
-
-
-	}
 ?>
