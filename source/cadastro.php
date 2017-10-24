@@ -11,25 +11,25 @@
 		$enrollment = $_POST["enrollment"];
 		$email = $_POST["email"];
 		$registry_date = date("Y-m-d");		
-		$sql  = "SELECT * FROM `users` WHERE email = '$email' OR username = '$username' OR enrollment = '$enrollment'";
-		$result = mysqli_query($link,$sql);
-		$retorna=mysqli_num_rows($result);
-		if($retorna!=0){
-			$_SESSION['status'] = 1; //erro username
-			$_SESSION['status'] = 2; //erro email
-			$_SESSION['status'] = 3; //erro enrollment
-		}else{	
+		$consulta = "SELECT * FROM `users` WHERE email = '$email' OR username = '$username' OR enrollment = '$enrollment'";
+		$result = mysqli_query($link, $consulta);
+		$retorna = mysqli_num_rows($result);
+		
+		if ($retorna != 0) { //todos esse são tratados igualmente
+			$_SESSION['status'] = 1; //erro username ou email ou enrollment
+		} else {	
 			$insere = "INSERT INTO `users`(`username`, `password`, `first_name`,`last_name`, `enrollment`, `email`, `registry_date`, `ban_status`, `user_role_uid`) 
 			VALUES ('$username', '$password', '$first_name','$last_name', '$enrollment', '$email', '$registry_date', 0, 1) ";
-			$result = mysqli_query($link,$insere);// or die("Nao inserido.");
-			if($result){
-				$_SESSION['status'] = 0; //Sucesso
-			}else{
-				$_SESSION['status'] = 4; //erro geral
+			$result = mysqli_query($link, $insere); // or die("Nao inserido.");
+			if ($result) {
+				$_SESSION['status'] = 4; //sucesso
+			} else {
+				$_SESSION['status'] = 5; //erro geral
 			}
 		}
 	}
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
   <head>
@@ -62,30 +62,37 @@
                   <legend>Cadastro de Usuário</legend>
                   <?php
 					if(isset($_SESSION['status'])){
-						$a = $_SESSION['status'];
-						switch($a){
-							case (0):{
-								echo 'teste';//aqui vai as div
+						$erro = $_SESSION['status'];
+						switch ($erro) {
+							case 1:
+								echo '
+								<div class="form-group" style="margin-bottom: -5px">
+									<div class="alert alert-danger" role="alert">
+										<b>Ops!</b>
+										<i>Cadastro falhou. Usuário, Matrícula ou Email já está em uso!</i>
+									</div>
+								</div>';
 								break;
-							}
-							case (1):{
-								echo 'teste1';//aqui vai as div
+							case 4: // sucesso
+								
+								echo '
+								<div class="form-group" style="margin-bottom: -5px">
+									<div class="alert alert-success" role="alert">
+									<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+										<i>Cadastro feito com sucesso!</i>
+									</div>
+								</div>';
+								//$_SESSION['cadastro'];
+								//header("Location: login.php");
 								break;
-							}
-							case (2):{
-								echo 'teste';//aqui vai as div
+							default:
+								//echo 'post ainda não enviou nada';
 								break;
-							}
-							case (3):{
-								echo 'teste';//aqui vai as div
-								break;
-							}
-							case (4):{
-								echo 'teste';//aqui vai as div
-								break;
-							}
 						}
 					}
+					session_unset($_SESSION['status']);
                   ?>
                   <div class="form-group">
                       <span class="fa fa-user"></span>

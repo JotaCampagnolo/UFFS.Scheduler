@@ -1,6 +1,9 @@
 <?php //17/10 - 07:55  to 8:29
+	include "funcoes.php";
 	session_start();
-	      $link = DBConection();
+	$link = DBConection();
+	
+	$_SESSION['status'] = 0;
 	if(isset($_POST['login'])){
 		$user = $_POST['user'];
 		//$password = md5($_POST['password']); implementar em 
