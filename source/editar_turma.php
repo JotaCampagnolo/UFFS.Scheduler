@@ -1,7 +1,7 @@
 <?php//17/10 - 08:35  to 8:50
       session_start();
       $_SESSION['status'] = 1;
-	     // $link = DBConection();
+	     $link = DBConection();
       if(isset($_POST["load"])){
 		$role = $_POST["role"];
 		$sql  = "SELECT * FROM `classes` WHERE name = '$role'";
@@ -33,22 +33,30 @@
 			$semester = $_POST["semester"];
 			$shift = $_POST["shift"];
 			$period = $_POST["period"];
-			$registry_date = date("Y-m-d");	
+			$registry_date = date("Y-m-d");
 			if(isset($_POST["name"])){
 				$name = $_POST["name"];
-			}else	
+			}else
 				$name = "CC - ".$period." Fase - ".$shift." - ".$year."/".$semester;
-				
-			$sql  = "SELECT * FROM `classes` WHERE name = '$name'";
-			$result = mysqli_query($link,$sql);
-			$retorna=mysqli_num_rows($result);
-			if($retorna!=0){
-				$_SESSION['status'] = 2; //erro username				
-			}else{
-				$sql = "UPDATE () FROM `classes` WHERE name = '$role'";
-				
+
+		//	$sql  = "SELECT * FROM `classes` WHERE name = '$name'";
+		//	$result = mysqli_query($link,$sql);
+		//	$retorna=mysqli_num_rows($result);
+		//	if($retorna!=0){
+		//		$_SESSION['status'] = 2; //erro username
+		//	}else{
+		//		$sql = "UPDATE () FROM `classes` WHERE name = '$role'";
+    $up = mysqli_query("UPDATE classes SET year='$year', semester='$semester', shift='$shift',period='$period' WHERE $role=name");
+
+    if(mysqli_affected_rows() > 0){
+      echo "Sucesso: Atualizado corretamente!";
+    }else{
+      echo "Aviso: Não foi atualizado!";
+    }
+
+
 			}
-		}			
+		}
 	}
  ?>
 
@@ -72,7 +80,8 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <?php
-      include "funcoes.php"
+      include "funcoes.php";
+      $link = DBConection();
     ?>
   </head>
   <body>
@@ -107,7 +116,7 @@
                       <label>Selecione a Turma:</label>
                       <select id="image_selection" name="role" class="form-control">
                           <?php
-                              $class = mysqli_query($link, "SELECT uid, name FROM classes");
+                              $class = mysqli_query($link, "SELECT * FROM classes");
                               while ($row = mysqli_fetch_array($class)){
                                   echo "<option>" . $row[1] . "</option>";
                               }
@@ -117,7 +126,7 @@
                   <div class="form-group">
                       <span class="fa fa-graduation-cap"></span>
                       <label>Novo Nome da Turma:</label>
-                      <input type="text" name="name" placeholder="CC - 1 Fase - Matutino - 2017/2" maxlength="20" class="form-control"/>
+                      <input type="text" id="name" name="name" placeholder="CC - 1 Fase - Matutino - 2017/2" maxlength="20" class="form-control"/>
                       <div class="text-center" style="margin-top: 5px">
                         <i>Deixe em branco para que seja criado um nome automaticamente.</i>
                       <!-- "CC 1 Fase - Matutino - 2017/2" -->
