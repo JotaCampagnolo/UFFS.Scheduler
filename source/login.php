@@ -3,9 +3,9 @@
 	session_start();
 	$link = DBConection();
 	
-	$_SESSION['status'] = 0;
 	if(isset($_POST['login'])){
 		$user = $_POST['user'];
+		unset($_SESSION['status']);
 		//$password = md5($_POST['password']); implementar em 
 		$password = $_POST['password'];
 		$sql  = "SELECT * FROM `users` WHERE email = '$user' OR username = '$user' OR enrollment = '$user'";
@@ -13,16 +13,20 @@
 		$retorna=mysqli_num_rows($result);
 		$row = mysqli_fetch_array($result);
 		if($retorna == 1){	// retornando uma tupla somente, existe somente um usuário com o login.
-			$sql  = "SELECT * FROM `users` WHERE password = '$password' and uid = '$row[1]'";
+			$sql  = "SELECT * FROM `users` WHERE password = '$password' and uid = '$row[0]'";
 			$result = mysqli_query($link,$sql);
 			$retorna=mysqli_num_rows($result);
 			if($retorna == 1){
-				$_SESSION['login'] = $row['1'];
+				$_SESSION['login'] = $row['0'];
+				$_SESSION['status'] = 2; //Sucesso username
+				
 				header("Location: home.php");
 			}else{
+				$_SESSION['status'] = 1; //erro password
+			}
+		}else{
 				$_SESSION['status'] = 1; //erro username
 			}
-		}
 	}
 ?>
 
@@ -57,7 +61,7 @@
               <fieldset style="margin: 40px 20px 40px 20px">
                   <legend>Login</legend>
                   <?php
-                  if(isset($_SESSION['status']) == 1){
+                  if(isset($_SESSION['status']) && $_SESSION['status']== 1){
                     echo '<div class="form-group" style="margin-bottom: -5px">
                       <div class="alert alert-danger" role="alert">
                         <b>Ops!</b>
@@ -65,6 +69,15 @@
                       </div>
                     </div>';
                   }
+                  if(isset($_SESSION['status']) && $_SESSION['status'] == 2){
+                    echo '<div class="form-group" style="margin-bottom: -5px">
+                      <div class="alert alert-success" role="alert">
+                        <b>Uhull!</b>
+                        <i>Login Perfeito. Vai timão!</i>
+                      </div>
+                    </div>';
+                  }
+                  unset($_SESSION['status']);
                   ?>
                   <div class="form-group">
                       <span class="fa fa-user"></span>
