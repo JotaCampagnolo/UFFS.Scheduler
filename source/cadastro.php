@@ -10,15 +10,15 @@
 		$last_name = $_POST["last_name"];
 		$enrollment = $_POST["enrollment"];
 		$email = $_POST["email"];
-		$registry_date = date("Y-m-d");		
+		$registry_date = date("Y-m-d");
 		$consulta = "SELECT * FROM `users` WHERE email = '$email' OR username = '$username' OR enrollment = '$enrollment'";
 		$result = mysqli_query($link, $consulta);
 		$retorna = mysqli_num_rows($result);
-		
+
 		if ($retorna != 0) { //todos esse são tratados igualmente
 			$_SESSION['status'] = 1; //erro username ou email ou enrollment
-		} else {	
-			$insere = "INSERT INTO `users`(`username`, `password`, `first_name`,`last_name`, `enrollment`, `email`, `registry_date`, `ban_status`, `user_role_uid`) 
+		} else {
+			$insere = "INSERT INTO `users`(`username`, `password`, `first_name`,`last_name`, `enrollment`, `email`, `registry_date`, `ban_status`, `user_role_uid`)
 			VALUES ('$username', '$password', '$first_name','$last_name', '$enrollment', '$email', '$registry_date', 0, 1) ";
 			$result = mysqli_query($link, $insere); // or die("Nao inserido.");
 			if ($result) {
@@ -65,16 +65,19 @@
 						$erro = $_SESSION['status'];
 						switch ($erro) {
 							case 1:
-								echo '
-								<div class="form-group" style="margin-bottom: -5px">
-									<div class="alert alert-danger" role="alert">
-										<b>Ops!</b>
-										<i>Cadastro falhou. Usuário, Matrícula ou Email já está em uso!</i>
-									</div>
-								</div>';
+                                echo '
+                                <div class="form-group" style="margin-bottom: -5px">
+                                    <div class="alert alert-danger" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                        <b>Ops!</b>
+                                        <i>Cadastro falhou. Usuário, Matrícula ou Email já está em uso!</i>
+                                    </div>
+                                </div>';
 								break;
 							case 4: // sucesso
-								
+
 								echo '
 								<div class="form-group" style="margin-bottom: -5px">
 									<div class="alert alert-success" role="alert">
