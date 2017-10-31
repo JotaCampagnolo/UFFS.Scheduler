@@ -1,64 +1,62 @@
 <?php//17/10 - 08:35  to 8:50
       session_start();
+      include "funcoes.php";
       $_SESSION['status'] = 1;
-	     $link = DBConection();
-      if(isset($_POST["load"])){
-		$role = $_POST["role"];
-		$sql  = "SELECT * FROM `classes` WHERE name = '$role'";
-		$result = mysqli_query($link,$sql);
-		$retorna=mysqli_num_rows($result);
-		if($retorna!=0){
-			$row = mysqli_fetch_array($result);
-			//VALUES ('$name', '$year', '$semester','$shift', '$registry_date') ";
-			$year1 = $row[2];
-			$semester1 = $row[3];
-			$shift1 = $row[4];
-			$period1 = $row[5];
-		}
-	}
+         $link = DBConection();
+     /* if(isset($_POST["load"])){
+        $role = $_POST["role"];
+        $sql  = "SELECT * FROM `classes` WHERE name = '$role'";
+        $result = mysqli_query($link,$sql);
+        $retorna=mysqli_num_rows($result);
+        if($retorna!=0){
+            $row = mysqli_fetch_array($result);
+            //VALUES ('$name', '$year', '$semester','$shift', '$registry_date') ";
+            $year1 = $row[2];
+            $semester1 = $row[3];
+            $shift1 = $row[4];
+            $period1 = $row[5];
+        }
+    }*/
       if(isset($_POST["change"])){
-		$role = $_POST["role"];
-		$sql  = "SELECT * FROM `classes` WHERE name = '$role'";
-		$result = mysqli_query($link,$sql);
-		$retorna=mysqli_num_rows($result);
-		if($retorna!=0){
-			$row = mysqli_fetch_array($result);
-			//VALUES ('$name', '$year', '$semester','$shift', '$registry_date') ";
-			$year1 = $row[2];
-			$semester1 = $row[3];
-			$shift1 = $row[4];
-			$period1 = $row[5];
-			//alteração
-			$year = $_POST["year"];
-			$semester = $_POST["semester"];
-			$shift = $_POST["shift"];
-			$period = $_POST["period"];
-			$registry_date = date("Y-m-d");
-			if(isset($_POST["name"])){
-				$name = $_POST["name"];
-			}else
-				$name = "CC - ".$period." Fase - ".$shift." - ".$year."/".$semester;
-
-		//	$sql  = "SELECT * FROM `classes` WHERE name = '$name'";
-		//	$result = mysqli_query($link,$sql);
-		//	$retorna=mysqli_num_rows($result);
-		//	if($retorna!=0){
-		//		$_SESSION['status'] = 2; //erro username
-		//	}else{
-		//		$sql = "UPDATE () FROM `classes` WHERE name = '$role'";
-    $up = mysqli_query("UPDATE classes SET year='$year', semester='$semester', shift='$shift',period='$period' WHERE $role=name");
-
-    if(mysqli_affected_rows() > 0){
-      echo "Sucesso: Atualizado corretamente!";
-    }else{
-      echo "Aviso: Não foi atualizado!";
+        $role = $_POST["role"];
+        $sql  = "SELECT * FROM `classes` WHERE name = '$role'";
+        $result = mysqli_query($link,$sql);
+        $retorna=mysqli_num_rows($result);
+        if($retorna!=0){
+            $row = mysqli_fetch_array($result);
+            //VALUES ('$name', '$year', '$semester','$shift', '$registry_date') ";
+            $year1 = $row[2];
+            $semester1 = $row[3];
+            $shift1 = $row[4];
+            $period1 = $row[5];
+            //alteração
+            $year = $_POST["year"];
+            $semester = $_POST["semester"];
+            $shift = $_POST["shift"];
+            $period = $_POST["period"];
+            $registry_date = date("Y-m-d");
+            if(isset($_POST["name"])){
+                $name = $_POST["name"];
+            }else{
+                $name = "CC - ".$period." Fase - ".$shift." - ".$year."/".$semester;
+                
+                $up = "UPDATE classes SET year='$year', semester='$semester', shift='$shift',period='$period' WHERE $role=name";
+                
+                $result = mysqli_query($link,$up);                
+                $retorna=mysqli_num_rows($result);                
+                if(retorna == 1){
+                    echo "teste";
+                  echo "Sucesso: Atualizado corretamente!";
+                }else{
+                  echo "Aviso: Não foi atualizado!";
+                }
+            }
+        }
     }
-
-
-			}
-		}
-	}
  ?>
+
+
+
 
 <!DOCTYPE html>
 <html lang="pt-br">
