@@ -88,19 +88,25 @@
                    <?php
                   if(isset($_SESSION['status']) == 1){
                     echo '<div class="form-group" style="margin-bottom: -5px">
-                      <div class="alert alert-success" role="alert">
-                        <b>Sucesso!</b>
-                        <i>A Turma foi editada com sucesso!</i>
-                      </div>
+                        <div class="alert alert-success" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                            <b>Sucesso!</b>
+                            <i>A turma foi alterada com sucesso!</i>
+                        </div>
                     </div>';
                   }
                   if(isset($_SESSION['status']) == 2){
-                    echo '<div class="form-group" style="margin-bottom: -5px">
-                      <div class="alert alert-danger" role="alert">
-                        <b>Ops!</b>
-                        <i>Edição falhou. Já existe turma com esse nome!</i>
-                      </div>
-                    </div>';
+                      echo '<div class="form-group" style="margin-bottom: -5px">
+                          <div class="alert alert-danger" role="alert">
+                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </button>
+                              <b>Erro!</b>
+                              <i>Esta turma já esta cadastrada!</i>
+                          </div>
+                      </div>';
                   }
                   ?>
                   <div class="form-group">
