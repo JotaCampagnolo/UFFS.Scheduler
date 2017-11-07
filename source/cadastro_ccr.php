@@ -1,3 +1,33 @@
+ <?php
+	include "funcoes.php";
+	session_start();
+	$link = DBConection();
+	//Cadastrar CCR
+	if(isset($_POST["Cadastrar"])){
+		$code = $_POST["code"];
+		$name = $_POST["name"];
+		$class_uid = $_POST["Class"];		
+		//pegar direto do servidor
+		$registry_date = date("Y-m-d");
+		
+		$consulta = "SELECT * FROM `ccrs` WHERE code = '$code' AND class_uid = '$class_uid'";
+		$result = mysqli_query($link, $consulta);
+		$retorna = mysqli_num_rows($result);
+
+		if ($retorna != 0) { //todos esse são tratados igualmente
+			$_SESSION['status'] = 1; //erro já existe CCR
+		} else {
+			$insere = "INSERT INTO `ccrs`(`code`, `name`, `registry_date`, `class_uid`) VALUES  ('$code', '$name', '$registry_date','$class_uid') ";
+			$result = mysqli_query($link, $insere); // or die("Nao inserido.");
+			if ($result) {
+				$_SESSION['status'] = 2; //sucesso
+			} else {
+				$_SESSION['status'] = 3; //erro geral
+			}
+		}
+	}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
   <head>
@@ -19,10 +49,6 @@
     <![endif]-->
   </head>
   <body>
-      <?php
-        include "funcoes.php";
-        $link = DBConection();
-      ?>
     <div class="container">
       <div class="row">
         <div class="col-sm-3">
@@ -31,6 +57,42 @@
           <form action = "cadastro_ccr.php" class="form-horizontal" method="post" style="margin-top: -30px">
               <fieldset style="margin: 40px 20px 40px 20px">
                   <legend>Cadastro de CCR</legend>
+                   <?php
+                    if(isset($_SESSION['status'])){
+                  if($_SESSION['status'] == 2){
+                    echo '<div class="form-group" style="margin-bottom: -5px">
+                        <div class="alert alert-success" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                            <b>Sucesso!</b>
+                            <i>Componente Curricular adicionado com sucesso!</i>
+                        </div>
+                    </div>';
+                  }
+                  if($_SESSION['status'] == 1){
+                      echo '<div class="form-group" style="margin-bottom: -5px">
+                          <div class="alert alert-danger" role="alert">
+                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </button>
+                              <b>Erro!</b>
+                              <i>Componente Curricular já esta cadastrado!</i>
+                          </div>
+                      </div>';
+                  }if($_SESSION['status'] == 3){
+                      echo '<div class="form-group" style="margin-bottom: -5px">
+                          <div class="alert alert-danger" role="alert">
+                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </button>
+                              <b>Erro!</b>
+                              <i>Occorreu um erro, tente mais tarde ou verifique com o Administrador!</i>
+                          </div>
+                      </div>';
+                  }
+			  }
+                  ?>
                   <div class="form-group">
                       <span class="fa fa-barcode"></span>
                       <label>Código:</label>
@@ -50,11 +112,12 @@
                               while ($row = mysqli_fetch_array($class)){
                                   echo '<option value="' . $row[0] . '">' . $row[1] . '</option>';
                               }
+                               unset($_SESSION['status']);
                           ?>
                       </select>
                   </div>
                   <div class="form-group text-center">
-                      <button type="submit" class="btn btn-success" value="Cadastrar" style="margin: 5px"><span class="fa fa-check" style="margin-right: 8px"></span>Cadastrar</button>
+                      <button type="submit" class="btn btn-success" name="Cadastrar"value="Cadastrar" style="margin: 5px"><span class="fa fa-check" style="margin-right: 8px"></span>Cadastrar</button>
                       <button type="reset" class="btn btn-warning" value="Limpar" style="margin: 5px"><span class="fa fa-trash" style="margin-right: 8px"></span>Limpar</button>
                       <a class="btn btn-danger" href="index.php" type="button" style="margin: 5px">
                           <span class="fa fa-close" style="margin-right: 6px"></span>Cancelar
