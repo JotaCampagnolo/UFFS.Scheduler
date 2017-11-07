@@ -3,10 +3,10 @@
   ini_set('display_errors', 'On');
 
     session_start();
-    include "funcoes.php";
+    //include "funcoes.php";
     unset($_SESSION['status']);
     //$_SESSION['status'] = 0;
-    $link = DBConection();
+    //$link = DBConection();
 
     if(isset($_POST["Gravar"])){
     //header("Location:home.php");
@@ -72,7 +72,7 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <?php
-      //include "funcoes.php";
+      include "funcoes.php";
       $link = DBConection();
     ?>
   </head>
@@ -127,7 +127,7 @@
                   <div class="form-group">
                       <span class="fa fa-calendar"></span>
                       <label>Ano de Ingresso:</label>
-                      <input type="number" name="year" placeholder="2017" required class="form-control"/>
+                      <input type="number" name="year" value="2017" required class="form-control"/>
                   </div>
                    <div class="form-group">
                       <span class="fa fa-calendar"></span>
