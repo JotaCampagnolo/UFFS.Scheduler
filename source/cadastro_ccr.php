@@ -107,6 +107,7 @@
                       <span class="fa fa-graduation-cap"></span>
                       <label>Turma do CCR:</label>
                       <select id="class" name="Class" class="form-control">
+                        <option disable select value style="display:none"> Selecione uma turma: </option>>
                           <?php
                               $class = mysqli_query($link, "SELECT * FROM classes");
                               while ($row = mysqli_fetch_array($class)){
