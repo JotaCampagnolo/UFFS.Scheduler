@@ -1,3 +1,48 @@
+ <?php
+	include "funcoes.php";
+	session_start();
+	$link = DBConection();
+	//Cadastrar turma
+	if(isset($_POST["cadastrar_turma"])){
+		$name = $_POST["name"];
+		$year = $_POST["year"];
+		$semester = $_POST["semester"];
+		$shift = $_POST["shift"];
+		$period = $_POST["period"];
+		$registry_date = date("Y-m-d");
+		
+		if($_POST["name"] == '') { //cria um nome se o usuário nao digitou um
+			$name = "CC - ".$period." Fase - ".$shift." - ".$year."/".$semester;
+			//echo $name . '<br><br>';
+		}
+		
+		$consulta = "SELECT * FROM `classes` WHERE name = '$name' OR 
+					year = '$year', semester = '$semester', shift = '$shift', period = '$period'"; //pesquisa no banco se o nome ja existe
+					echo $consulta;
+		$result = mysqli_query($link, $consulta);
+		$retorna = mysqli_num_rows($result);
+		
+		if ($retorna != 0) {
+			$_SESSION['status'] = 1; //nome da turma já existe
+			//echo "nome já existe <br><br>";	
+		} else {
+			//echo 'nome nao existe <br><br>';
+			
+			$insere = "INSERT INTO `classes`(`name`, `year`, `semester`,`shift`, `period`, `registry_date`) 
+			VALUES ('$name', '$year', '$semester','$shift', '$period',  '$registry_date') ";
+			//echo "$insere";
+			
+			$result = mysqli_query($link, $insere); // or die("Nao inserido.");
+			if ($result) {
+				$_SESSION['status'] = 4; //sucesso
+			} else {
+				$_SESSION['status'] = 5; //erro geral
+			}
+		}
+	}
+?>
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
   <head>
@@ -25,10 +70,11 @@
         <div class="col-sm-3">
         </div>
         <div class="col-sm-6">
-          <form action = "cadastrar_turma.php" class="form-horizontal" method="post" style="margin-top: -30px">
+          <form action = "cadastro_turma.php" class="form-horizontal" method="post" style="margin-top: -30px">
               <fieldset style="margin: 40px 20px 40px 20px">
                   <legend>Cadastro de Turma</legend>
-                  <?php
+				<!--
+				  <?php
                   if(isset($_SESSION['status']) == 1){
                     echo '<div class="form-group" style="margin-bottom: -5px">
                       <div class="alert alert-success" role="alert">
@@ -48,6 +94,8 @@
                     </div>';
                   }
                   ?>
+				-->
+                  
                   <div class="form-group">
                       <span class="fa fa-graduation-cap"></span>
                       <label>Nome da Turma:</label>
@@ -60,7 +108,7 @@
                   <div class="form-group">
                       <span class="fa fa-calendar"></span>
                       <label>Ano de Ingresso</label>
-                      <input type="number" name="year"  value="2017" required class="form-control"/>
+                      <input type="number" name="year" value="2017" required class="form-control"/>
                   </div>
                   <div class="form-group">
                       <span class="fa fa-calendar"></span>
@@ -70,7 +118,7 @@
                    <div class="form-group">
                      <span class="fa fa-clock-o"></span>
                      <label>Turno:</label>
-                     <select multiple class="form-control" size="3" id="semester">
+                     <select required multiple class="form-control" name="shift" size="3" id="shift">
                        <option>Matutino</option>
                        <option>Vespertino</option>
                        <option>Noturno</option>
@@ -82,8 +130,8 @@
                       <input type="range" name="period"  onchange="document.getElementById('per').innerHTML = this.value" min="1" max="10" value="1" required />
                   </div>
                   <div class="form-group text-center">
-                      <input type="submit" value="Cadastrar" class="btn btn-success"/>
-                      <input type="submit" value="Alterar Turma" class="btn btn-primary"/>
+                      <input type="submit" name="cadastrar_turma" value="Cadastrar" class="btn btn-success"/>
+                      <input type="submit" name="alterar_turma" value="alterar" class="btn btn-warning"/>
                   </div>
 
           </fieldset>
@@ -97,7 +145,6 @@
 
       </div>
     </div>
-
 
     <!-- jQuery (obrigatório para plugins JavaScript do Bootstrap) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
