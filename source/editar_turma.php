@@ -30,13 +30,13 @@
          $name = $_POST["name"];
        }else{
          $name = "CC - ".$period." Fase - ".$shift." - ".$year."/".$semester;
-       }         
-         $up = "UPDATE classes SET name='$name', year='$year', semester='$semester', shift='$shift',period='$period' WHERE '$uid'=uid";         
-         $retorna = mysqli_query($link,$up); 
+       }
+         $up = "UPDATE classes SET name='$name', year='$year', semester='$semester', shift='$shift',period='$period' WHERE '$uid'=uid";
+         $retorna = mysqli_query($link,$up);
          if($retorna){
            $_SESSION['status'] = 1; //SUCESSO
          }else{
-            $_SESSION['status'] = 2; //erro 
+            $_SESSION['status'] = 2; //erro
          }
        }
      }
@@ -147,8 +147,11 @@
                       <input type="range" name="period"  onchange="document.getElementById('per').innerHTML = this.value" min="1" max="10" value="1" required />
                   </div>
                   <div class="form-group text-center">
-                      <input type="submit" name="Gravar" value="Gravar" class="btn btn-success"/>
-                      <input type="submit" value="Cancelar" class="btn btn-danger"/>
+                      <button type="submit" class="btn btn-success" name="Gravar" value="Gravar" style="margin: 5px"><span class="fa fa-check" style="margin-right: 8px"></span>Gravar Alteração</button>
+                      <button type="reset" class="btn btn-warning" name="Limpar" value="Limpar" style="margin: 5px"><span class="fa fa-trash" style="margin-right: 8px"></span>Limpar</button>
+                      <a class="btn btn-danger" href="index.php" type="button" style="margin: 5px">
+                          <span class="fa fa-close" style="margin-right: 6px"></span>Cancelar
+                      </a>
                   </div>
 
           </fieldset>
@@ -170,5 +173,3 @@
     <script src="js/bootstrap.min.js"></script>
   </body>
 </html>
-  
-
