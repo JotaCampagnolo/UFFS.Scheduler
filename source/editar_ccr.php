@@ -1,3 +1,9 @@
+ <?php
+  include "funcoes.php";
+  session_start();
+  $link = DBConection();
+  ?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
   <head>
@@ -17,10 +23,7 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <?php
-      //include "funcoes.php";
-      //$link = DBConection();
-    ?>
+    
   </head>
   <body>
     <div class="container">
@@ -65,7 +68,7 @@
                           <?php
                               $class = mysqli_query($link, "SELECT * FROM ccrs");
                               while ($row = mysqli_fetch_array($class)){
-                                  echo '<option value="' . $row[0] . '">' . $row[1] ." - ". $row[2]'</option>';
+                                  echo '<option value="' . $row[0] . '">' . $row[1]. ' - '.$row[2] .'</option>';
                               }
                                unset($_SESSION['status']);
                           ?>
@@ -85,7 +88,7 @@
                       <span class="fa fa-graduation-cap"></span>
                       <label>Nova Turma do CCR:</label>
                       <select id="class" name="Class" class="form-control">
-                          <option selected >Selecione</option>
+                          <option disable select value style="display:none"> Selecione uma turma: </option>>
                           <?php
                               $class = mysqli_query($link, "SELECT * FROM classes");
                               while ($row = mysqli_fetch_array($class)){
@@ -120,4 +123,5 @@
   </body>
 </html>
   
+
 
