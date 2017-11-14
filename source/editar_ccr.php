@@ -1,8 +1,38 @@
- <?php
-  include "funcoes.php";
-  session_start();
-  $link = DBConection();
-  ?>
+<?php 
+  error_reporting(-1);
+  ini_set('display_errors', 'On');
+
+    session_start();
+    include "funcoes.php";
+    $_SESSION['status'] = 0;
+    $link = DBConection();
+
+    if(isset($_POST["Gravar"])){
+		$uid = $_POST["uid"];
+		$code = $_POST["code"];
+		$name = $_POST["name"];
+		$class = $_POST["Class"];
+
+     $sql  = "SELECT * FROM `ccrs` WHERE code='$code' AND name='$name' AND class_uid = '$class' AND uid <>'$uid'";
+     $result = mysqli_query($link,$sql);
+     $retorna=mysqli_num_rows($result);
+     if($retorna==1){
+		 $_SESSION['status'] = 3; //erro
+	}else{
+			$uid = $_POST["uid"];
+			$code = $_POST["code"];
+			$name = $_POST["name"];
+			$class = $_POST["Class"];
+			$up = "UPDATE ccrs SET code = '$code', name='$name', class_uid ='$class' WHERE uid='$uid'";
+			$retorna = mysqli_query($link,$up);
+			if($retorna){
+			$_SESSION['status'] = 1; //SUCESSO
+			}else{
+			$_SESSION['status'] = 2; //erro
+			}
+		}
+	}
+ ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -31,7 +61,7 @@
         <div class="col-sm-3">
         </div>
         <div class="col-sm-6">
-          <form action = "editar_turma.php" class="form-horizontal" method="post" style="margin-top: -30px">
+          <form action = "editar_ccr.php" class="form-horizontal" method="post" style="margin-top: -30px">
               <fieldset style="margin: 40px 20px 40px 20px">
                   <legend>Edição de Turma</legend>
                     <?php
@@ -43,7 +73,7 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                                 <b>Sucesso!</b>
-                                <i>A turma foi alterada com sucesso!</i>
+                                <i>CCR foi alterado com sucesso!</i>
                             </div>
                         </div>';
                       }
@@ -54,7 +84,18 @@
                                   <span aria-hidden="true">&times;</span>
                               </button>
                                   <b>Erro!</b>
-                                  <i>Esta turma já esta cadastrada!</i>
+                                  <i>Ocorreu um erro ao tentar alterar o CCR!</i>
+                              </div>
+                          </div>';
+                      }
+                      if($_SESSION['status'] == 3){
+                          echo '<div class="form-group" style="margin-bottom: -5px">
+                              <div class="alert alert-danger" role="alert">
+                              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                              </button>
+                                  <b>Erro!</b>
+                                  <i>Já existe esse CCR para esta turma!</i>
                               </div>
                           </div>';
                       }
@@ -63,7 +104,7 @@
                   <div class="form-group">
                       <span class="fa fa-graduation-cap"></span>
                       <label>CCR:</label>
-                      <select id="class" name="Class" class="form-control">
+                      <select id="ccr" name="uid" class="form-control">
                           <option selected >Selecione</option>
                           <?php
                               $class = mysqli_query($link, "SELECT * FROM ccrs");
