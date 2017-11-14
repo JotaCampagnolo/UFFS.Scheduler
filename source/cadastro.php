@@ -115,7 +115,7 @@
                    <div class="form-group">
                       <span class="fa fa-address-card"></span>
                       <label>Matricula:</label>
-                      <input type="text" name="enrollment" placeholder="Matricula" maxlength="20"required class="form-control"/>
+                      <input type="text" name="enrollment" placeholder="Matricula" maxlength="10"required class="form-control"/>
                   </div>
                   <div class="form-group">
                       <span class="fa fa-envelope"></span>
@@ -134,8 +134,10 @@
                   </div>
 
                   <div class="form-group text-center">
-                      <input type="submit" name="cadastrar" value="Cadastrar" class="btn btn-success"/>
-                      <input type="submit" value="Já tenho cadastro" class="btn btn-warning"/>
+                      <button type="submit" name="cadastrar" value="Cadastrar" class="btn btn-success" style="margin: 5px"><span class="fa fa-check" style="margin-right: 8px"></span>Cadastrar</button>
+                      <a class="btn btn-primary" href="login.php" type="button" style="margin: 5px">
+                          <span class="fa fa-sign-in" style="margin-right: 6px"></span>Já Tenho Cadastro
+                      </a>
                   </div>
           </fieldset>
           </form>
