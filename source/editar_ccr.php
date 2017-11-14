@@ -41,7 +41,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- As 3 meta tags acima *devem* vir em primeiro lugar dentro do `head`; qualquer outro conteúdo deve vir *após* essas tags -->
-    <title>Edição de Turma</title>
+    <title>Edição de CCR</title>
       <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
 
     <!-- Bootstrap -->
@@ -63,7 +63,7 @@
         <div class="col-sm-6">
           <form action = "editar_ccr.php" class="form-horizontal" method="post" style="margin-top: -30px">
               <fieldset style="margin: 40px 20px 40px 20px">
-                  <legend>Edição de Turma</legend>
+                  <legend>Edição de CCR</legend>
                     <?php
                     if(isset($_SESSION['status'])){
                       if($_SESSION['status'] == 1){
