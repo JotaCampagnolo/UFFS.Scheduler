@@ -13,25 +13,17 @@
 		
 		if($_POST["name"] == '') { //cria um nome se o usuário nao digitou um
 			$name = "CC - ".$period." Fase - ".$shift." - ".$year."/".$semester;
-			//echo $name . '<br><br>';
 		}
 		
-		$consulta = "SELECT * FROM `classes` WHERE name = '$name' OR 
-					year = '$year', semester = '$semester', shift = '$shift', period = '$period'"; //pesquisa no banco se o nome ja existe
-					echo $consulta;
+		$consulta = "SELECT * FROM `classes` WHERE name = '$name' AND 
+					year = '$year' AND semester = '$semester' AND shift = '$shift' AND period = '$period'"; //pesquisa no banco se o nome ja existe
 		$result = mysqli_query($link, $consulta);
 		$retorna = mysqli_num_rows($result);
 		
 		if ($retorna != 0) {
 			$_SESSION['status'] = 1; //nome da turma já existe
-			//echo "nome já existe <br><br>";	
-		} else {
-			//echo 'nome nao existe <br><br>';
-			
 			$insere = "INSERT INTO `classes`(`name`, `year`, `semester`,`shift`, `period`, `registry_date`) 
 			VALUES ('$name', '$year', '$semester','$shift', '$period',  '$registry_date') ";
-			//echo "$insere";
-			
 			$result = mysqli_query($link, $insere); // or die("Nao inserido.");
 			if ($result) {
 				$_SESSION['status'] = 4; //sucesso
@@ -41,7 +33,6 @@
 		}
 	}
 ?>
-
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -73,29 +64,34 @@
           <form action = "cadastro_turma.php" class="form-horizontal" method="post" style="margin-top: -30px">
               <fieldset style="margin: 40px 20px 40px 20px">
                   <legend>Cadastro de Turma</legend>
-				<!--
-				  <?php
-                  if(isset($_SESSION['status']) == 1){
-                    echo '<div class="form-group" style="margin-bottom: -5px">
-                      <div class="alert alert-success" role="alert">
-                        <b>Sucesso!</b>
-                        <i>A ultima Turma foi cadastrada com sucesso!</i>
-                      </div>
-                    </div>';
-                  }
+					<?php
+					if(isset($_SESSION['status'])){
+						$erro = $_SESSION['status'];
+						switch ($erro) {
+							case 1: //turma já existe
+								echo '
+									<div class="form-group" style="margin-bottom: -5px">
+										<div class="alert alert-danger" role="alert">
+											<b>Ops!</b>
+											<i>Sua inserção falhou. A Turma já está cadastrada!</i>
+										</div>
+									</div>';
+                                break;
+							case 4: //sucesso
+								echo '
+									<div class="form-group" style="margin-bottom: -5px">
+										<div class="alert alert-success" role="alert">
+											<b>Sucesso!</b>
+											<i>A ultima Turma foi cadastrada com sucesso!</i>
+										</div>
+									</div>';
+								break;
+							default:
+								break;
+						}
+					}
+					session_unset($_SESSION['status']);
                   ?>
-                  <?php
-                  if(isset($_SESSION['status']) == 2){
-                    echo '<div class="form-group" style="margin-bottom: -5px">
-                      <div class="alert alert-danger" role="alert">
-                        <b>Ops!</b>
-                        <i>Sua inserção falhou. A Turma já está cadastrada!</i>
-                      </div>
-                    </div>';
-                  }
-                  ?>
-				-->
-                  
                   <div class="form-group">
                       <span class="fa fa-graduation-cap"></span>
                       <label>Nome da Turma:</label>
