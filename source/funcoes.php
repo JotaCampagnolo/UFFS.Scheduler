@@ -2,7 +2,7 @@
 function DBConection(){
 	$host = "localhost";
 	$user = "root";
-	$pass = "7698740";
+	$pass = "123";
 	$database = "uffsscheduler";
 
 	$link = mysqli_connect($host, $user, $pass, $database);

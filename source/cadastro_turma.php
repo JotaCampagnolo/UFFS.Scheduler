@@ -22,8 +22,10 @@
 		
 		if ($retorna != 0) {
 			$_SESSION['status'] = 1; //nome da turma já existe
+			
+		} else {
 			$insere = "INSERT INTO `classes`(`name`, `year`, `semester`,`shift`, `period`, `registry_date`) 
-			VALUES ('$name', '$year', '$semester','$shift', '$period',  '$registry_date') ";
+						VALUES ('$name', '$year', '$semester','$shift', '$period',  '$registry_date') ";
 			$result = mysqli_query($link, $insere); // or die("Nao inserido.");
 			if ($result) {
 				$_SESSION['status'] = 4; //sucesso
