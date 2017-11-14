@@ -2,11 +2,11 @@
 	include "funcoes.php";
 	session_start();
 	$link = DBConection();
-	
+
 	if(isset($_POST['login'])){
 		$user = $_POST['user'];
 		unset($_SESSION['status']);
-		//$password = md5($_POST['password']); implementar em 
+		//$password = md5($_POST['password']); implementar em
 		$password = $_POST['password'];
 		$sql  = "SELECT * FROM `users` WHERE email = '$user' OR username = '$user' OR enrollment = '$user'";
 		$result = mysqli_query($link,$sql);
@@ -19,8 +19,8 @@
 			if($retorna == 1){
 				$_SESSION['login'] = $row['0'];
 				$_SESSION['status'] = 2; //Sucesso username
-				
-				header("Location: home.php");
+
+				header("Location: index.php");
 			}else{
 				$_SESSION['status'] = 1; //erro password
 			}
@@ -62,19 +62,25 @@
                   <legend>Login</legend>
                   <?php
                   if(isset($_SESSION['status']) && $_SESSION['status']== 1){
-                    echo '<div class="form-group" style="margin-bottom: -5px">
-                      <div class="alert alert-danger" role="alert">
-                        <b>Ops!</b>
-                        <i>Login falhou. Verifique os dados inseridos!</i>
-                      </div>
-                    </div>';
+					echo '<div class="form-group" style="margin-bottom: -5px">
+						<div class="alert alert-danger" role="alert">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+							<b>Ops!</b>
+							<i>Login falhou. Verifique os dados inseridos!</i>
+						</div>
+					</div>';
                   }
                   if(isset($_SESSION['status']) && $_SESSION['status'] == 2){
-                    echo '<div class="form-group" style="margin-bottom: -5px">
-                      <div class="alert alert-success" role="alert">
-                        <b>Uhull!</b>
-                        <i>Login Perfeito. Vai timão!</i>
-                      </div>
+					echo '<div class="form-group" style="margin-bottom: -5px">
+                        <div class="alert alert-success" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                            <b>Sucesso!</b>
+                            <i>Login realizado com sucesso!</i>
+                        </div>
                     </div>';
                   }
                   unset($_SESSION['status']);
@@ -90,8 +96,10 @@
                       <input type="password" name="password" placeholder="**********" maxlength="20" required class="form-control"/>
                   </div>
                   <div class="form-group text-center">
-                      <input type="submit" name ="login" value="Entrar" class="btn btn-success"/>
-                      <input type="submit" value="Novo Cadastro" class="btn btn-warning"/>
+					  <button type="submit" name ="login" value="Entrar" class="btn btn-success" style="margin: 5px"><span class="fa fa-sign-in" style="margin-right: 8px"></span>Entrar</button>
+                      <a class="btn btn-primary" value="Novo Cadastro" href="cadastro.php" type="button" style="margin: 5px">
+                          <span class="fa fa-user-plus" style="margin-right: 6px"></span>Novo Cadastro
+                      </a>
                   </div>
                   <div class="form-group text-center">
                       <a href="recov.html">Esqueci Minha Senha</a>
