@@ -1,35 +1,34 @@
-<?php
+ <?php
   include "funcoes.php";
   $link = DBConection();
-  unset($_SESSION['login']);
-  if(isset($_POST['login'])){
-    $user = $_POST['user'];
-    unset($_SESSION['status']);
-    unset($_SESSION['login']);
-    $password = $_POST['password'];
-    $sql  = "SELECT * FROM `users` WHERE email = '$user' OR username = '$user' OR enrollment = '$user'";
-    $result = mysqli_query($link,$sql);
-    $retorna=mysqli_num_rows($result);
-    $row = mysqli_fetch_array($result);
-    if($retorna == 1){  // retornando uma tupla somente, existe somente um usuário com o login.
-      $sql  = "SELECT * FROM `users` WHERE password = '$password' and uid = '$row[0]'";
-      $result = mysqli_query($link,$sql);
-      $retorna=mysqli_num_rows($result);
-      if($retorna == 1){
-        $_SESSION['login'] = $row['1'];
-        $_SESSION['status'] = 2; //Sucesso username
-    }else{
-        $_SESSION['status'] = 1; //erro password
+  //Cadastrar aluno
+  if(isset($_POST["cadastrar"])){
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+    $passwordc = $_POST["password_c"];
+    $first_name = $_POST["first_name"];
+    $last_name = $_POST["last_name"];
+    $enrollment = $_POST["enrollment"];
+    $email = $_POST["email"];
+    $registry_date = date("Y-m-d");
+    $consulta = "SELECT * FROM `users` WHERE email = '$email' AND username = '$username' AND enrollment = '$enrollment' AND first_name = '$first_name' AND email = '$email'";
+    $result = mysqli_query($link, $consulta);
+    $retorna = mysqli_num_rows($result);
+    $class = mysqli_query($link, $consulta);
+    if ($retorna != 0 || $password !=$passwordc) { //todos esse são tratados igualmente
+      $_SESSION['status'] = 1; //erro username ou email ou enrollment
+    } else {
+      $row = mysqli_fetch_array($class);
+      $uid = $row['0'];
+      $up = "UPDATE users SET password = '$password' WHERE uid='$uid'";
+      $result = mysqli_query($link, $insere); // or die("Nao inserido.");
+      if ($result) {
+        $_SESSION['status'] = 4; //sucesso
+      } else {
+        $_SESSION['status'] = 5; //erro geral
       }
-    }else{
-        $_SESSION['status'] = 1; //erro username
-      }
+    }
   }
-   if(isset($_POST['novoCadastro']))
-      header("Location: cadastro.php");
-
-
-
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -62,7 +61,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
       <div class="container">
-        <a class="navbar-brand js-scroll-trigger" href="index.php#page-top">UFFS SCHEDULER</a>
+        <a class="navbar-brand js-scroll-trigger" href="#page-top">UFFS SCHEDULER</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           Menu
           <i class="fa fa-bars"></i>
@@ -113,7 +112,7 @@
                   <a class="nav-link js-scroll-trigger" data-toggle="dropdown">'. $_SESSION['login'] .'</a>
                   <span class="caret"></span></button>
                   <ul class="dropdown-menu">
-                    <li><a href="login.php">Fazer Logout</a></li>
+                    <li><a href="login.php">Fazer Login</a></li>
                   </ul>
                 </div>
             </li>';}
@@ -136,48 +135,84 @@
         <div class="col-sm-6" style="position:relative; top:80px; left:0; right:0; bottom:0; opacity:1;">
           <form action = "login.php" class="form-horizontal" method="post" style="margin-top: -30px">
               <fieldset style="margin: 40px 20px 100px 20px">
-                  <legend>Login</legend>
+                  <legend>Recuperação de Senha</legend>
                   <?php
-                  if(isset($_SESSION['status']) && $_SESSION['status']== 1){
-                    echo '<div class="form-group" style="margin-bottom: -5px">
-                      <div class="alert alert-danger" role="alert">
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                        <b>Ops!</b>
-                        <i>Login falhou. Verifique os dados inseridos!</i>
-                      </div>
-                    </div>';
-                            }
-                  if(isset($_SESSION['status']) && $_SESSION['status'] == 2){
-                        echo '<div class="form-group" style="margin-bottom: -5px">
-                        <div class="alert alert-success" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                            <b>Sucesso!</b>
-                            <i>Login realizado com sucesso!</i>
-                        </div>
-                    </div>';
-                  }
-                  unset($_SESSION['status']);
+          if(isset($_SESSION['status'])){
+            $erro = $_SESSION['status'];
+            switch ($erro) {
+              case 1:
+                                echo '
+                                <div class="form-group" style="margin-bottom: -5px">
+                                    <div class="alert alert-danger" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                        <b>Ops!</b>
+                                        <i>Cadastro falhou. Usuário, Matrícula ou Email já está em uso!</i>
+                                    </div>
+                                </div>';
+                break;
+              case 4: // sucesso
+
+                echo '
+                <div class="form-group" style="margin-bottom: -5px">
+                  <div class="alert alert-success" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                    <i>Cadastro feito com sucesso!</i>
+                  </div>
+                </div>';
+                //$_SESSION['cadastro'];
+                //header("Location: login.php");
+                break;
+              default:
+                //echo 'post ainda não enviou nada';
+                break;
+            }
+
+            session_unset($_SESSION['status']);
+            }
                   ?>
                   <div class="form-group">
                       <span class="fa fa-user"></span>
-                      <label>Usuário | Matricula | E-mail:</label>
-                      <input type="text" name="user" placeholder="Usuário | Matricula | E-mail" maxlength="20" required class="form-control"/>
+                      <label>Nome:</label>
+                      <input type="text" name="first_name" placeholder="Nome" maxlength="20" required class="form-control"/>
+                  </div>
+                  <div class="form-group">
+                      <span class="fa fa-user"></span>
+                      <label>Sobrenome:</label>
+                      <input type="text" name="last_name" placeholder="Sobrenome" maxlength="20" required class="form-control"/>
+                  </div>
+                   <div class="form-group">
+                      <span class="fa fa-user"></span>
+                      <label>Nome de Usuário:</label>
+                      <input type="text" name="username" placeholder="Nome de Usuário" maxlength="20" required class="form-control"/>
+                  </div>
+                   <div class="form-group">
+                      <span class="fa fa-address-card"></span>
+                      <label>Matricula:</label>
+                      <input type="text" name="enrollment" placeholder="Matricula" maxlength="10"required class="form-control"/>
+                  </div>
+                  <div class="form-group">
+                      <span class="fa fa-envelope"></span>
+                      <label>Email:</label>
+                      <input type="email" name="email" placeholder="email@dominio" maxlength="40" required class="form-control"/>
                   </div>
                   <div class="form-group">
                       <span class="fa fa-key"></span>
-                      <label>Senha:</label>
+                      <label>Senha</label>
                       <input type="password" name="password" placeholder="**********" maxlength="20" required class="form-control"/>
                   </div>
-                  <div class="form-group text-center">
-                      <input type="submit" name ="login" value="Entrar" class="btn btn-success"/>
-                      <input type="submit" name="novoCadastro" value="Novo Cadastro" class="btn btn-warning"/>
+                  <div class="form-group">
+                      <span class="fa fa-key"></span>
+                      <label>Confirme a Senha</label>
+                      <input type="password" name="password_c" placeholder="**********" maxlength="20" required class="form-control"/>
                   </div>
+
                   <div class="form-group text-center">
-                      <a href="recov.php">Esqueci Minha Senha</a>
+                      <input type="submit" name ="cadastrar" value="Gravar" class="btn btn-success"/>
+                      <input type="submit" name="novoCadastro" value="Novo Cadastro" class="btn btn-warning"/>
                   </div>
           </fieldset>
           </form>

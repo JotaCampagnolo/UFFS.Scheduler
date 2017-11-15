@@ -6,10 +6,10 @@
 	if(isset($_POST["Cadastrar"])){
 		$code = $_POST["code"];
 		$name = $_POST["name"];
-		$class_uid = $_POST["Class"];		
+		$class_uid = $_POST["Class"];
 		//pegar direto do servidor
 		$registry_date = date("Y-m-d");
-		
+
 		$consulta = "SELECT * FROM `ccrs` WHERE code = '$code' AND class_uid = '$class_uid'";
 		$result = mysqli_query($link, $consulta);
 		$retorna = mysqli_num_rows($result);

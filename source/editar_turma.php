@@ -1,4 +1,4 @@
-<?php //07/11 - 07:55  to 9:20
+<?php
   error_reporting(-1);
   ini_set('display_errors', 'On');
 

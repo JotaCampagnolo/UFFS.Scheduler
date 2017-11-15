@@ -1,38 +1,40 @@
 <?php
-  include "funcoes.php";
-  $link = DBConection();
-  unset($_SESSION['login']);
-  if(isset($_POST['login'])){
-    $user = $_POST['user'];
-    unset($_SESSION['status']);
-    unset($_SESSION['login']);
-    $password = $_POST['password'];
-    $sql  = "SELECT * FROM `users` WHERE email = '$user' OR username = '$user' OR enrollment = '$user'";
-    $result = mysqli_query($link,$sql);
-    $retorna=mysqli_num_rows($result);
-    $row = mysqli_fetch_array($result);
-    if($retorna == 1){  // retornando uma tupla somente, existe somente um usuário com o login.
-      $sql  = "SELECT * FROM `users` WHERE password = '$password' and uid = '$row[0]'";
-      $result = mysqli_query($link,$sql);
-      $retorna=mysqli_num_rows($result);
-      if($retorna == 1){
-        $_SESSION['login'] = $row['1'];
-        $_SESSION['status'] = 2; //Sucesso username
-    }else{
-        $_SESSION['status'] = 1; //erro password
+  error_reporting(-1);
+  ini_set('display_errors', 'On');
+    include "funcoes.php";
+    $_SESSION['status'] = 0;
+    $link = DBConection();
+
+    if(isset($_POST["Gravar"])){
+    $uid = $_POST["uid"];
+    $code = $_POST["code"];
+    $name = $_POST["name"];
+    $class = $_POST["Class"];
+
+     $sql  = "SELECT * FROM `ccrs` WHERE code='$code' AND name='$name' AND class_uid = '$class' AND uid <>'$uid'";
+     $result = mysqli_query($link,$sql);
+     $retorna=mysqli_num_rows($result);
+     if($retorna==1){
+     $_SESSION['status'] = 3; //erro
+  }else{
+      $uid = $_POST["uid"];
+      $code = $_POST["code"];
+      $name = $_POST["name"];
+      $class = $_POST["Class"];
+      $up = "UPDATE ccrs SET code = '$code', name='$name', class_uid ='$class' WHERE uid='$uid'";
+      $retorna = mysqli_query($link,$up);
+      if($retorna){
+      $_SESSION['status'] = 1; //SUCESSO
+      }else{
+      $_SESSION['status'] = 2; //erro
       }
-    }else{
-        $_SESSION['status'] = 1; //erro username
-      }
+    }
   }
-   if(isset($_POST['novoCadastro']))
-      header("Location: cadastro.php");
+ ?>
 
-
-
-?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
   <head>
 
     <meta charset="utf-8">
@@ -59,7 +61,7 @@
 
   <body id="page-top">
 
-    <!-- Navigation -->
+<!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
       <div class="container">
         <a class="navbar-brand js-scroll-trigger" href="index.php#page-top">UFFS SCHEDULER</a>
@@ -134,51 +136,90 @@
         <div class="col-sm-3">
         </div>
         <div class="col-sm-6" style="position:relative; top:80px; left:0; right:0; bottom:0; opacity:1;">
-          <form action = "login.php" class="form-horizontal" method="post" style="margin-top: -30px">
-              <fieldset style="margin: 40px 20px 100px 20px">
-                  <legend>Login</legend>
-                  <?php
-                  if(isset($_SESSION['status']) && $_SESSION['status']== 1){
-                    echo '<div class="form-group" style="margin-bottom: -5px">
-                      <div class="alert alert-danger" role="alert">
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                        <b>Ops!</b>
-                        <i>Login falhou. Verifique os dados inseridos!</i>
-                      </div>
-                    </div>';
-                            }
-                  if(isset($_SESSION['status']) && $_SESSION['status'] == 2){
+
+        <form action = "editar_ccr.php" class="form-horizontal" method="post" style="margin-top: -30px">
+              <fieldset style="margin: 40px 20px 40px 20px">
+                  <legend>Edição de CCR</legend>
+                    <?php
+                    if(isset($_SESSION['status'])){
+                      if($_SESSION['status'] == 1){
                         echo '<div class="form-group" style="margin-bottom: -5px">
-                        <div class="alert alert-success" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                            <b>Sucesso!</b>
-                            <i>Login realizado com sucesso!</i>
-                        </div>
-                    </div>';
-                  }
-                  unset($_SESSION['status']);
+                            <div class="alert alert-success" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                                <b>Sucesso!</b>
+                                <i>CCR foi alterado com sucesso!</i>
+                            </div>
+                        </div>';
+                      }
+                      if($_SESSION['status'] == 2){
+                          echo '<div class="form-group" style="margin-bottom: -5px">
+                              <div class="alert alert-danger" role="alert">
+                              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                              </button>
+                                  <b>Erro!</b>
+                                  <i>Ocorreu um erro ao tentar alterar o CCR!</i>
+                              </div>
+                          </div>';
+                      }
+                      if($_SESSION['status'] == 3){
+                          echo '<div class="form-group" style="margin-bottom: -5px">
+                              <div class="alert alert-danger" role="alert">
+                              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                              </button>
+                                  <b>Erro!</b>
+                                  <i>Já existe esse CCR para esta turma!</i>
+                              </div>
+                          </div>';
+                      }
+                    }
                   ?>
                   <div class="form-group">
-                      <span class="fa fa-user"></span>
-                      <label>Usuário | Matricula | E-mail:</label>
-                      <input type="text" name="user" placeholder="Usuário | Matricula | E-mail" maxlength="20" required class="form-control"/>
+                      <span class="fa fa-graduation-cap"></span>
+                      <label>CCR:</label>
+                      <select id="ccr" name="uid" class="form-control">
+                          <option selected >Selecione</option>
+                          <?php
+                              $class = mysqli_query($link, "SELECT * FROM ccrs cr JOIN classes cl  on cl.uid = cr.class_uid");
+                              while ($row = mysqli_fetch_array($class)){
+                                  echo '<option value="' . $row[0] . '">' . $row[1]. ' - '.$row[2] .' - '. $row[6] .'</option>';
+                              }
+                               unset($_SESSION['status']);
+                          ?>
+                      </select>
+                  </div>
+                 <div class="form-group">
+                      <span class="fa fa-barcode"></span>
+                      <label>Novo Código:</label>
+                      <input type="text" name="code" placeholder="GEX000" maxlength="6" required class="form-control"/>
                   </div>
                   <div class="form-group">
-                      <span class="fa fa-key"></span>
-                      <label>Senha:</label>
-                      <input type="password" name="password" placeholder="**********" maxlength="20" required class="form-control"/>
+                      <span class="fa fa-book"></span>
+                      <label>Novo Nome do CCR:</label>
+                      <input type="text" name="name" placeholder="Nome da Disciplina" maxlength="50" required class="form-control"/>
+                  </div>
+                   <div class="form-group">
+                      <span class="fa fa-graduation-cap"></span>
+                      <label>Nova Turma do CCR:</label>
+                      <select id="class" name="Class" class="form-control">
+                          <option disable select value style="display:none"> Selecione uma turma: </option>>
+                          <?php
+                              $class = mysqli_query($link, "SELECT * FROM classes");
+                              while ($row = mysqli_fetch_array($class)){
+                                  echo '<option value="' . $row[0] . '">' . $row[1] . '</option>';
+                              }
+                               unset($_SESSION['status']);
+                          ?>
+                      </select>
                   </div>
                   <div class="form-group text-center">
-                      <input type="submit" name ="login" value="Entrar" class="btn btn-success"/>
-                      <input type="submit" name="novoCadastro" value="Novo Cadastro" class="btn btn-warning"/>
+                      <input type="submit" name="Gravar" value="Gravar" class="btn btn-success"/>
+                      <input type="submit" value="Cancelar" class="btn btn-danger"/>
                   </div>
-                  <div class="form-group text-center">
-                      <a href="recov.php">Esqueci Minha Senha</a>
-                  </div>
+
           </fieldset>
           </form>
         </div>

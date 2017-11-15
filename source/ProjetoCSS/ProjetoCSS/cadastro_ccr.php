@@ -1,38 +1,36 @@
-<?php
+ <?php
   include "funcoes.php";
   $link = DBConection();
-  unset($_SESSION['login']);
-  if(isset($_POST['login'])){
-    $user = $_POST['user'];
-    unset($_SESSION['status']);
-    unset($_SESSION['login']);
-    $password = $_POST['password'];
-    $sql  = "SELECT * FROM `users` WHERE email = '$user' OR username = '$user' OR enrollment = '$user'";
-    $result = mysqli_query($link,$sql);
-    $retorna=mysqli_num_rows($result);
-    $row = mysqli_fetch_array($result);
-    if($retorna == 1){  // retornando uma tupla somente, existe somente um usuário com o login.
-      $sql  = "SELECT * FROM `users` WHERE password = '$password' and uid = '$row[0]'";
-      $result = mysqli_query($link,$sql);
-      $retorna=mysqli_num_rows($result);
-      if($retorna == 1){
-        $_SESSION['login'] = $row['1'];
-        $_SESSION['status'] = 2; //Sucesso username
-    }else{
-        $_SESSION['status'] = 1; //erro password
+  //Cadastrar CCR
+  if(isset($_POST["Cadastrar"])){
+    $code = $_POST["code"];
+    $name = $_POST["name"];
+    $class_uid = $_POST["Class"];
+    //pegar direto do servidor
+    $registry_date = date("Y-m-d");
+
+    $consulta = "SELECT * FROM `ccrs` WHERE code = '$code' AND class_uid = '$class_uid'";
+    $result = mysqli_query($link, $consulta);
+    $retorna = mysqli_num_rows($result);
+
+    if ($retorna != 0) { //todos esse são tratados igualmente
+      $_SESSION['status'] = 1; //erro já existe CCR
+    } else {
+      $insere = "INSERT INTO `ccrs`(`code`, `name`, `registry_date`, `class_uid`) VALUES  ('$code', '$name', '$registry_date','$class_uid') ";
+      $result = mysqli_query($link, $insere); // or die("Nao inserido.");
+      if ($result) {
+        $_SESSION['status'] = 2; //sucesso
+      } else {
+        $_SESSION['status'] = 3; //erro geral
       }
-    }else{
-        $_SESSION['status'] = 1; //erro username
-      }
+    }
   }
-   if(isset($_POST['novoCadastro']))
-      header("Location: cadastro.php");
-
-
-
 ?>
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
+
   <head>
 
     <meta charset="utf-8">
@@ -57,9 +55,9 @@
 
   </head>
 
-  <body id="page-top">
+<body id="page-top">
 
-    <!-- Navigation -->
+   <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
       <div class="container">
         <a class="navbar-brand js-scroll-trigger" href="index.php#page-top">UFFS SCHEDULER</a>
@@ -134,50 +132,76 @@
         <div class="col-sm-3">
         </div>
         <div class="col-sm-6" style="position:relative; top:80px; left:0; right:0; bottom:0; opacity:1;">
-          <form action = "login.php" class="form-horizontal" method="post" style="margin-top: -30px">
-              <fieldset style="margin: 40px 20px 100px 20px">
-                  <legend>Login</legend>
-                  <?php
-                  if(isset($_SESSION['status']) && $_SESSION['status']== 1){
+
+          <form action = "cadastro_ccr.php" class="form-horizontal" method="post" style="margin-top: -30px">
+              <fieldset style="margin: 40px 20px 40px 20px">
+                  <legend>Cadastro de CCR</legend>
+                   <?php
+                    if(isset($_SESSION['status'])){
+                  if($_SESSION['status'] == 2){
                     echo '<div class="form-group" style="margin-bottom: -5px">
-                      <div class="alert alert-danger" role="alert">
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                        <b>Ops!</b>
-                        <i>Login falhou. Verifique os dados inseridos!</i>
-                      </div>
-                    </div>';
-                            }
-                  if(isset($_SESSION['status']) && $_SESSION['status'] == 2){
-                        echo '<div class="form-group" style="margin-bottom: -5px">
                         <div class="alert alert-success" role="alert">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                             <b>Sucesso!</b>
-                            <i>Login realizado com sucesso!</i>
+                            <i>Componente Curricular adicionado com sucesso!</i>
                         </div>
                     </div>';
                   }
-                  unset($_SESSION['status']);
+                  if($_SESSION['status'] == 1){
+                      echo '<div class="form-group" style="margin-bottom: -5px">
+                          <div class="alert alert-danger" role="alert">
+                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </button>
+                              <b>Erro!</b>
+                              <i>Componente Curricular já esta cadastrado!</i>
+                          </div>
+                      </div>';
+                  }if($_SESSION['status'] == 3){
+                      echo '<div class="form-group" style="margin-bottom: -5px">
+                          <div class="alert alert-danger" role="alert">
+                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </button>
+                              <b>Erro!</b>
+                              <i>Occorreu um erro, tente mais tarde ou verifique com o Administrador!</i>
+                          </div>
+                      </div>';
+                  }
+        }
                   ?>
                   <div class="form-group">
-                      <span class="fa fa-user"></span>
-                      <label>Usuário | Matricula | E-mail:</label>
-                      <input type="text" name="user" placeholder="Usuário | Matricula | E-mail" maxlength="20" required class="form-control"/>
+                      <span class="fa fa-barcode"></span>
+                      <label>Código:</label>
+                      <input type="text" name="code" placeholder="GEX000" maxlength="6" required class="form-control"/>
                   </div>
                   <div class="form-group">
-                      <span class="fa fa-key"></span>
-                      <label>Senha:</label>
-                      <input type="password" name="password" placeholder="**********" maxlength="20" required class="form-control"/>
+                      <span class="fa fa-book"></span>
+                      <label>Nome do CCR:</label>
+                      <input type="text" name="name" placeholder="Nome da Disciplina" maxlength="50" required class="form-control"/>
+                  </div>
+                  <div class="form-group">
+                      <span class="fa fa-graduation-cap"></span>
+                      <label>Turma do CCR:</label>
+                      <select id="class" name="Class" class="form-control">
+                        <option disable select value style="display:none"> Selecione uma turma: </option>>
+                          <?php
+                              $class = mysqli_query($link, "SELECT * FROM classes");
+                              while ($row = mysqli_fetch_array($class)){
+                                  echo '<option value="' . $row[0] . '">' . $row[1] . '</option>';
+                              }
+                               unset($_SESSION['status']);
+                          ?>
+                      </select>
                   </div>
                   <div class="form-group text-center">
-                      <input type="submit" name ="login" value="Entrar" class="btn btn-success"/>
-                      <input type="submit" name="novoCadastro" value="Novo Cadastro" class="btn btn-warning"/>
-                  </div>
-                  <div class="form-group text-center">
-                      <a href="recov.php">Esqueci Minha Senha</a>
+                      <button type="submit" class="btn btn-success" name="Cadastrar"value="Cadastrar" style="margin: 5px"><span class="fa fa-check" style="margin-right: 8px"></span>Cadastrar</button>
+                      <button type="reset" class="btn btn-warning" value="Limpar" style="margin: 5px"><span class="fa fa-trash" style="margin-right: 8px"></span>Limpar</button>
+                      <a class="btn btn-danger" href="index.php" type="button" style="margin: 5px">
+                          <span class="fa fa-close" style="margin-right: 6px"></span>Cancelar
+                      </a>
                   </div>
           </fieldset>
           </form>

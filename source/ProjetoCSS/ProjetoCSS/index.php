@@ -1,4 +1,8 @@
+<?php
+  include "funcoes.php";
+  $link = DBConection();
 
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -28,7 +32,7 @@
 
   <body id="page-top">
 
-    <!-- Navigation -->
+<!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
       <div class="container">
         <a class="navbar-brand js-scroll-trigger" href="#page-top">UFFS SCHEDULER</a>
@@ -39,20 +43,58 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#services">Cadastros</a>
+               <div class="dropdown">
+                  <a class="nav-link js-scroll-trigger" data-toggle="dropdown">Cadastros</a>
+                  <span class="caret"></span></button>
+                  <ul class="dropdown-menu">
+                    <li><a href="cadastro_turma.php">Cadastrar Turma</a></li>
+                    <li><a href="cadastro_ccr.php">Cadastrar CCR</a></li>
+                  </ul>
+                </div>
+            </li>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+               <div class="dropdown">
+                  <a class="nav-link js-scroll-trigger" data-toggle="dropdown">Editar</a>
+                  <span class="caret"></span></button>
+                  <ul class="dropdown-menu">
+                    <li><a href="editar_turma.php">Editar Turma</a></li>
+                    <li><a href="editar_ccr.php">Editar CCR</a></li>
+                  </ul>
+                </div>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#portfolio">Portifolio</a>
+              <a class="nav-link js-scroll-trigger" href="index.php#portfolio">Portifolio</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#about">About</a>
+              <a class="nav-link js-scroll-trigger" href="index.php#about">About</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#contact">Contact</a>
+              <a class="nav-link js-scroll-trigger" href="index.php#contact">Contact</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#team">Team</a>
+              <a class="nav-link js-scroll-trigger" href="index.php#team">Team</a>
             </li>
+
+
+              <?php if(isset($_SESSION['login'])){ echo '
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+               <div class="dropdown">
+                  <a class="nav-link js-scroll-trigger" data-toggle="dropdown">'. $_SESSION['login'] .'</a>
+                  <span class="caret"></span></button>
+                  <ul class="dropdown-menu">
+                    <li><a href="login.php">Fazer Logout</a></li>
+                  </ul>
+                </div>
+            </li>';}
+            else echo'
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="login.php">Fazer Login</a>
+            </li>';
+            ?>
           </ul>
         </div>
       </div>

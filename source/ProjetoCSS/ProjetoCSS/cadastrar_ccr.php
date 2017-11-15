@@ -1,38 +1,44 @@
-<?php
+ <?php
   include "funcoes.php";
+  session_start();
   $link = DBConection();
-  unset($_SESSION['login']);
-  if(isset($_POST['login'])){
-    $user = $_POST['user'];
-    unset($_SESSION['status']);
-    unset($_SESSION['login']);
-    $password = $_POST['password'];
-    $sql  = "SELECT * FROM `users` WHERE email = '$user' OR username = '$user' OR enrollment = '$user'";
-    $result = mysqli_query($link,$sql);
-    $retorna=mysqli_num_rows($result);
-    $row = mysqli_fetch_array($result);
-    if($retorna == 1){  // retornando uma tupla somente, existe somente um usuário com o login.
-      $sql  = "SELECT * FROM `users` WHERE password = '$password' and uid = '$row[0]'";
-      $result = mysqli_query($link,$sql);
-      $retorna=mysqli_num_rows($result);
-      if($retorna == 1){
-        $_SESSION['login'] = $row['1'];
-        $_SESSION['status'] = 2; //Sucesso username
-    }else{
-        $_SESSION['status'] = 1; //erro password
+  //Cadastrar turma
+  if(isset($_POST["cadastrar_turma"])){
+    $name = $_POST["name"];
+    $year = $_POST["year"];
+    $semester = $_POST["semester"];
+    $shift = $_POST["shift"];
+    $period = $_POST["period"];
+    $registry_date = date("Y-m-d");
+
+    if($_POST["name"] == '') { //cria um nome se o usuário nao digitou um
+      $name = "CC - ".$period." Fase - ".$shift." - ".$year."/".$semester;
+    }
+
+    $consulta = "SELECT * FROM `classes` WHERE name = '$name' AND
+          year = '$year' AND semester = '$semester' AND shift = '$shift' AND period = '$period'"; //pesquisa no banco se o nome ja existe
+    $result = mysqli_query($link, $consulta);
+    $retorna = mysqli_num_rows($result);
+
+    if ($retorna != 0) {
+      $_SESSION['status'] = 1; //nome da turma já existe
+
+    } else {
+      $insere = "INSERT INTO `classes`(`name`, `year`, `semester`,`shift`, `period`, `registry_date`)
+            VALUES ('$name', '$year', '$semester','$shift', '$period',  '$registry_date') ";
+      $result = mysqli_query($link, $insere); // or die("Nao inserido.");
+      if ($result) {
+        $_SESSION['status'] = 4; //sucesso
+      } else {
+        $_SESSION['status'] = 5; //erro geral
       }
-    }else{
-        $_SESSION['status'] = 1; //erro username
-      }
+    }
   }
-   if(isset($_POST['novoCadastro']))
-      header("Location: cadastro.php");
-
-
-
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
+
   <head>
 
     <meta charset="utf-8">
@@ -58,11 +64,10 @@
   </head>
 
   <body id="page-top">
-
-    <!-- Navigation -->
+   <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
       <div class="container">
-        <a class="navbar-brand js-scroll-trigger" href="index.php#page-top">UFFS SCHEDULER</a>
+        <a class="navbar-brand js-scroll-trigger" href="#page-top">UFFS SCHEDULER</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           Menu
           <i class="fa fa-bars"></i>
@@ -134,51 +139,75 @@
         <div class="col-sm-3">
         </div>
         <div class="col-sm-6" style="position:relative; top:80px; left:0; right:0; bottom:0; opacity:1;">
-          <form action = "login.php" class="form-horizontal" method="post" style="margin-top: -30px">
-              <fieldset style="margin: 40px 20px 100px 20px">
-                  <legend>Login</legend>
-                  <?php
-                  if(isset($_SESSION['status']) && $_SESSION['status']== 1){
-                    echo '<div class="form-group" style="margin-bottom: -5px">
-                      <div class="alert alert-danger" role="alert">
-                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                        <b>Ops!</b>
-                        <i>Login falhou. Verifique os dados inseridos!</i>
-                      </div>
-                    </div>';
-                            }
-                  if(isset($_SESSION['status']) && $_SESSION['status'] == 2){
-                        echo '<div class="form-group" style="margin-bottom: -5px">
-                        <div class="alert alert-success" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                            <b>Sucesso!</b>
-                            <i>Login realizado com sucesso!</i>
-                        </div>
-                    </div>';
-                  }
-                  unset($_SESSION['status']);
+          <form action = "cadastro_turma.php" class="form-horizontal" method="post" style="margin-top: -30px">
+              <fieldset style="margin: 40px 20px 40px 20px">
+                  <legend>Cadastro de Turma</legend>
+          <?php
+          if(isset($_SESSION['status'])){
+            $erro = $_SESSION['status'];
+            switch ($erro) {
+              case 1: //turma já existe
+                echo '
+                  <div class="form-group" style="margin-bottom: -5px">
+                    <div class="alert alert-danger" role="alert">
+                      <b>Ops!</b>
+                      <i>Sua inserção falhou. A Turma já está cadastrada!</i>
+                    </div>
+                  </div>';
+                                break;
+              case 4: //sucesso
+                echo '
+                  <div class="form-group" style="margin-bottom: -5px">
+                    <div class="alert alert-success" role="alert">
+                      <b>Sucesso!</b>
+                      <i>A ultima Turma foi cadastrada com sucesso!</i>
+                    </div>
+                  </div>';
+                break;
+              default:
+                break;
+            }
+          }
+          session_unset($_SESSION['status']);
                   ?>
                   <div class="form-group">
-                      <span class="fa fa-user"></span>
-                      <label>Usuário | Matricula | E-mail:</label>
-                      <input type="text" name="user" placeholder="Usuário | Matricula | E-mail" maxlength="20" required class="form-control"/>
+                      <span class="fa fa-graduation-cap"></span>
+                      <label>Nome da Turma:</label>
+                      <input type="text" name="name" placeholder="CC - 1 Fase - Matutino - 2017/2" maxlength="50" class="form-control"/>
+                      <div class="text-center" style="margin-top: 5px">
+                        <i>Deixe em branco para que seja criado um nome automaticamente.</i>
+                      <!-- "CC 1 Fase - Matutino - 2017/2" -->
+                      </div>
                   </div>
                   <div class="form-group">
-                      <span class="fa fa-key"></span>
-                      <label>Senha:</label>
-                      <input type="password" name="password" placeholder="**********" maxlength="20" required class="form-control"/>
+                      <span class="fa fa-calendar"></span>
+                      <label>Ano de Ingresso</label>
+                      <input type="number" name="year" value="2017" required class="form-control"/>
+                  </div>
+                  <div class="form-group">
+                      <span class="fa fa-calendar"></span>
+                      <label>Semestre de Ingresso:</label><i id="sem" style="margin-left: 5px">1</i>
+                      <input type="range" name="semester"  onchange="document.getElementById('sem').innerHTML = this.value" min="1" max="2" value ="1" required />
+                  </div>
+                   <div class="form-group">
+                     <span class="fa fa-clock-o"></span>
+                     <label>Turno:</label>
+                     <select required multiple class="form-control" name="shift" size="3" id="shift">
+                       <option>Matutino</option>
+                       <option>Vespertino</option>
+                       <option>Noturno</option>
+                     </select>
+                 </div>
+                  <div class="form-group">
+                      <span class="fa fa-calendar"></span>
+                      <label>Período:</label><i id="per" style="margin-left: 5px">1</i>
+                      <input type="range" name="period"  onchange="document.getElementById('per').innerHTML = this.value" min="1" max="10" value="1" required />
                   </div>
                   <div class="form-group text-center">
-                      <input type="submit" name ="login" value="Entrar" class="btn btn-success"/>
-                      <input type="submit" name="novoCadastro" value="Novo Cadastro" class="btn btn-warning"/>
+                      <input type="submit" name="cadastrar_turma" value="Cadastrar" class="btn btn-success"/>
+                      <input type="submit" name="alterar_turma" value="alterar" class="btn btn-warning"/>
                   </div>
-                  <div class="form-group text-center">
-                      <a href="recov.php">Esqueci Minha Senha</a>
-                  </div>
+
           </fieldset>
           </form>
         </div>

@@ -1,4 +1,4 @@
-<?php 
+<?php
   error_reporting(-1);
   ini_set('display_errors', 'On');
 
@@ -53,7 +53,7 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    
+
   </head>
   <body>
     <div class="container">
@@ -163,6 +163,6 @@
     <script src="js/bootstrap.min.js"></script>
   </body>
 </html>
-  
+
 
 

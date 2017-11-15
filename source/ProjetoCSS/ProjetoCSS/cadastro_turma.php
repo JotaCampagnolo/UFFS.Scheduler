@@ -1,3 +1,39 @@
+ <?php
+  include "funcoes.php";
+  $link = DBConection();
+  //Cadastrar turma
+  if(isset($_POST["cadastrar_turma"])){
+    $name = $_POST["name"];
+    $year = $_POST["year"];
+    $semester = $_POST["semester"];
+    $shift = $_POST["shift"];
+    $period = $_POST["period"];
+    $registry_date = date("Y-m-d");
+
+    if($_POST["name"] == '') { //cria um nome se o usuário nao digitou um
+      $name = "CC - ".$period." Fase - ".$shift." - ".$year."/".$semester;
+    }
+
+    $consulta = "SELECT * FROM `classes` WHERE name = '$name' AND
+          year = '$year' AND semester = '$semester' AND shift = '$shift' AND period = '$period'"; //pesquisa no banco se o nome ja existe
+    $result = mysqli_query($link, $consulta);
+    $retorna = mysqli_num_rows($result);
+
+    if ($retorna != 0) {
+      $_SESSION['status'] = 1; //nome da turma já existe
+
+    } else {
+      $insere = "INSERT INTO `classes`(`name`, `year`, `semester`,`shift`, `period`, `registry_date`)
+            VALUES ('$name', '$year', '$semester','$shift', '$period',  '$registry_date') ";
+      $result = mysqli_query($link, $insere); // or die("Nao inserido.");
+      if ($result) {
+        $_SESSION['status'] = 4; //sucesso
+      } else {
+        $_SESSION['status'] = 5; //erro geral
+      }
+    }
+  }
+?>
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -27,8 +63,7 @@
   </head>
 
   <body id="page-top">
-
-    <!-- Navigation -->
+     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
       <div class="container">
         <a class="navbar-brand js-scroll-trigger" href="#page-top">UFFS SCHEDULER</a>
@@ -39,20 +74,58 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#services">Cadastros</a>
+               <div class="dropdown">
+                  <a class="nav-link js-scroll-trigger" data-toggle="dropdown">Cadastros</a>
+                  <span class="caret"></span></button>
+                  <ul class="dropdown-menu">
+                    <li><a href="cadastro_turma.php">Cadastrar Turma</a></li>
+                    <li><a href="cadastro_ccr.php">Cadastrar CCR</a></li>
+                  </ul>
+                </div>
+            </li>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+               <div class="dropdown">
+                  <a class="nav-link js-scroll-trigger" data-toggle="dropdown">Editar</a>
+                  <span class="caret"></span></button>
+                  <ul class="dropdown-menu">
+                    <li><a href="editar_turma.php">Editar Turma</a></li>
+                    <li><a href="editar_ccr.php">Editar CCR</a></li>
+                  </ul>
+                </div>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#portfolio">Portifolio</a>
+              <a class="nav-link js-scroll-trigger" href="index.php#portfolio">Portifolio</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#about">About</a>
+              <a class="nav-link js-scroll-trigger" href="index.php#about">About</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#contact">Contact</a>
+              <a class="nav-link js-scroll-trigger" href="index.php#contact">Contact</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#team">Team</a>
+              <a class="nav-link js-scroll-trigger" href="index.php#team">Team</a>
             </li>
+
+
+              <?php if(isset($_SESSION['login'])){ echo '
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+               <div class="dropdown">
+                  <a class="nav-link js-scroll-trigger" data-toggle="dropdown">'. $_SESSION['login'] .'</a>
+                  <span class="caret"></span></button>
+                  <ul class="dropdown-menu">
+                    <li><a href="login.php">Fazer Logout</a></li>
+                  </ul>
+                </div>
+            </li>';}
+            else echo'
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="login.php">Fazer Login</a>
+            </li>';
+            ?>
           </ul>
         </div>
       </div>
@@ -60,33 +133,42 @@
 
     <!-- Header -->
     <header class="masthead">
-      <div class="container">
+    <div class="container" >
       <div class="row">
         <div class="col-sm-3">
         </div>
-        <div class="col-sm-6">
-          <form action = "funcoes.php" class="form-horizontal" method="post" style="margin-top: -30px">
+        <div class="col-sm-6" style="position:relative; top:80px; left:0; right:0; bottom:0; opacity:1;">
+          <form action = "cadastro_turma.php" class="form-horizontal" method="post" style="margin-top: -30px">
               <fieldset style="margin: 40px 20px 40px 20px">
                   <legend>Cadastro de Turma</legend>
-                  <?php
-                  if(isset($_SESSION['status']) == 1){
-                    echo '<div class="form-group" style="margin-bottom: -5px">
-                      <div class="alert alert-success" role="alert">
-                        <b>Sucesso!</b>
-                        <i>A ultima Turma foi cadastrada com sucesso!</i>
-                      </div>
-                    </div>';
-                  }
-                  ?>
-                  <?php
-                  if(isset($_SESSION['status']) == 2){
-                    echo '<div class="form-group" style="margin-bottom: -5px">
-                      <div class="alert alert-danger" role="alert">
-                        <b>Ops!</b>
-                        <i>Sua inserção falhou. A Turma já está cadastrada!</i>
-                      </div>
-                    </div>';
-                  }
+          <?php
+          if(isset($_SESSION['status'])){
+            $erro = $_SESSION['status'];
+            switch ($erro) {
+              case 1: //turma já existe
+                echo '
+                  <div class="form-group" style="margin-bottom: -5px">
+                    <div class="alert alert-danger" role="alert">
+                      <b>Ops!</b>
+                      <i>Sua inserção falhou. A Turma já está cadastrada!</i>
+                    </div>
+                  </div>';
+                                break;
+              case 4: //sucesso
+                echo '
+                  <div class="form-group" style="margin-bottom: -5px">
+                    <div class="alert alert-success" role="alert">
+                      <b>Sucesso!</b>
+                      <i>A ultima Turma foi cadastrada com sucesso!</i>
+                    </div>
+                  </div>';
+                break;
+              default:
+                break;
+            }
+
+            session_unset($_SESSION['status']);
+                    }
                   ?>
                   <div class="form-group">
                       <span class="fa fa-graduation-cap"></span>
@@ -100,7 +182,7 @@
                   <div class="form-group">
                       <span class="fa fa-calendar"></span>
                       <label>Ano de Ingresso</label>
-                      <input type="number" name="year"  value="2017" required class="form-control"/>
+                      <input type="number" name="year" value="2017" required class="form-control"/>
                   </div>
                   <div class="form-group">
                       <span class="fa fa-calendar"></span>
@@ -110,7 +192,7 @@
                    <div class="form-group">
                      <span class="fa fa-clock-o"></span>
                      <label>Turno:</label>
-                     <select multiple class="form-control" size="3" id="semester">
+                     <select required multiple class="form-control" name="shift" size="3" id="shift">
                        <option>Matutino</option>
                        <option>Vespertino</option>
                        <option>Noturno</option>
@@ -122,8 +204,8 @@
                       <input type="range" name="period"  onchange="document.getElementById('per').innerHTML = this.value" min="1" max="10" value="1" required />
                   </div>
                   <div class="form-group text-center">
-                      <input type="submit" value="Cadastrar" class="btn btn-success"/>
-                      <input type="submit" value="Alterar Turma" class="btn btn-primary"/>
+                      <input type="submit" name="cadastrar_turma" value="Cadastrar" class="btn btn-success"/>
+                      <input type="submit" name="alterar_turma" value="alterar" class="btn btn-warning"/>
                   </div>
 
           </fieldset>

@@ -6,6 +6,7 @@
 	if(isset($_POST["cadastrar"])){
 		$username = $_POST["username"];
 		$password = $_POST["password"];
+              $passwordc = $_POST["password_c"];
 		$first_name = $_POST["first_name"];
 		$last_name = $_POST["last_name"];
 		$enrollment = $_POST["enrollment"];
@@ -15,7 +16,7 @@
 		$result = mysqli_query($link, $consulta);
 		$retorna = mysqli_num_rows($result);
 
-		if ($retorna != 0) { //todos esse são tratados igualmente
+		if ($retorna != 0 || $password !=$passwordc) { //todos esse são tratados igualmente
 			$_SESSION['status'] = 1; //erro username ou email ou enrollment
 		} else {
 			$insere = "INSERT INTO `users`(`username`, `password`, `first_name`,`last_name`, `enrollment`, `email`, `registry_date`, `ban_status`, `user_role_uid`)
